@@ -1,4 +1,4 @@
-    <div class="sidebar-wrapper active border-end" style="position: relative; font-family:'Poppins', sans-serif;">
+    <div class="sidebar-wrapper active border-end h-full" style="height: 100%; min-height: 100vh;position: sticky; font-family:'Poppins', sans-serif;">
         <div class="sidebar-header border-bottom mx-1">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="logo">
@@ -18,7 +18,7 @@
             </div>
         </div>
 
-        <div class="sidebar-menu">
+        <div class="sidebar-menu h-full" style="overflow-y: none;">
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>
             

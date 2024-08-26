@@ -18,6 +18,18 @@ Route::get('/create', function () {
     return view('dashboard.section.create.index');
 })->middleware(['auth', 'verified'])->name('create');
 
+Route::get('/view', function () {
+    return view('dashboard.section.view.index');
+})->middleware(['auth', 'verified'])->name('view');
+
+Route::get('/edit', function () {
+    return view('dashboard.section.edit.index');
+})->middleware(['auth', 'verified'])->name('edit');
+
+Route::get('/delete', function () {
+    return view('dashboard.section.delete.index');
+})->middleware(['auth', 'verified'])->name('delete');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

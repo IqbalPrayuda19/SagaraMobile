@@ -1,6 +1,5 @@
 @extends('dashboard.layouts.main')
 
 @section('container')
-    @include('dashboard.section.create.section')
+    @include('dashboard.section.edit.section')
 @endsection
-

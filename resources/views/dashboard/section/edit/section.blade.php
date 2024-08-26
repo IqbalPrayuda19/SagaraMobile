@@ -1,4 +1,4 @@
-<section class=" pt-3 pb-3">
+<section class="section pt-3 pb-3">
     <div class="card mx-auto" style="max-width: 900px;">
         <div class="card-header d-flex justify-content-between align-items-center px-4 py-2">
         </div>
@@ -40,21 +40,28 @@
                     <div class="col-md-6">
                         <label for="akun-asset" class="form-label">Akun Asset Tetap</label>
                             <select class="form-select" id="akun-asset">
-                                <option value="Tanah">Tanah</option>
-                                <option value="Mesin Produksi">Mesin Produksi</option>
-                                <option value="Kendaraan Operasional">Kendaraan Operasional</option>
-                                <option value="Romboid">Peralatan Kantor</option>
-                                <option value="Trapeze">Bangunan</option>
-                                <option value="Traible">Komputer dan Peralatan IT</option>
-                                <option value="Polygon">Perabotan Kantor</option>
-                                <option value="polygon">Jaringan dan Infrastruktur IT</option>
+                                <option value="Tanah">Asset Tetap - Tanah</option>
+                                <option value="Mesin Produksi">Asset Tetap - Mesin Produksi</option>
+                                <option value="Kendaraan Operasional">Asset Tetap - Kendaraan Operasional</option>
+                                <option value="Romboid">Asset Tetap - Peralatan Kantor</option>
+                                <option value="Trapeze">Asset Tetap - Bangunan </option>
+                                <option value="Traible">Asset Tetap - Komputer dan Peralatan IT</option>
+                                <option value="polygon">Asset Tetap - Bangunan</option>
+                                <option value="polygon">Asset Tak Berwujud</option>
                             </select>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="akun-dikreditkan" class="form-label">Akun Dikreditkan</label>
                             <select class="form-select" id="akun-dikreditkan">
-                                <option value="square">(1-1001)kas</option>
+                                <option value="Tanah">Asset Tetap - Tanah</option>
+                                <option value="Mesin Produksi">Asset Tetap - Mesin Produksi</option>
+                                <option value="Kendaraan Operasional">Asset Tetap - Kendaraan Operasional</option>
+                                <option value="Romboid">Asset Tetap - Peralatan Kantor</option>
+                                <option value="Trapeze">Asset Tetap - Bangunan </option>
+                                <option value="Traible">Asset Tetap - Komputer dan Peralatan IT</option>
+                                <option value="polygon">Asset Tetap - Bangunan</option>
+                                <option value="polygon">Asset Tak Berwujud</option>
                             </select>
                         </div>
                     </div>
@@ -74,12 +81,7 @@
                     </div>
                 </div>
                 <h4 class="card-title mt-2">Penyusutan</h4>
-                <div class="checkbox">
-                    <input type="checkbox" class="form-check-input" id="checkbox2">
-                        <label for="checkbox2">Assets non Depresiasi</label>
-                    </div>
-                <div class="mb-3">
-                <div class="row mt-2">
+                <div class="row g-3 mt-2">
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="akun-dikreditkan" class="form-label">Metode</label>
@@ -133,10 +135,11 @@
                     <input type="date" class="form-control" id="Tanggal Penyusutan">
                 </div>
                 <div class="d-grid gap-2 mt-3">
-                    <button type="submit" class="btn btn-primary">simpan</button>
+                    <button type="submit" class="btn btn-primary">Edit</button>
                     <button type="button" class="btn btn-secondary">Batal</button>
                 </div>
             </form>
         </div>
     </div>
+<section>
 

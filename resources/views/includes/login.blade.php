@@ -1,4 +1,5 @@
 <x-guest-layout>
+
     <!-- Session Status -->
     <x-auth-session-status class="" :status="session('status')" />
 
@@ -10,14 +11,13 @@
         </div>
         <!-- Email Address -->
         <div>
-            <x-text-input id="email" class="block mt-1 w-100 px-2 input-custom text-dark" style="border: none; outline: none;" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder=" Masukan Email" />
             <x-text-input id="email" class="block mt-1 w-100 px-2" style="border: none; outline: none;" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder=" Masukan Email" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Password -->
         <div class="mt-4">
-            <x-text-input id="password" class="block mt-1 w-100 border-none px-2">
+            <x-text-input id="password" class="block mt-1 w-100 border-none px-2"
                             style="border: none; outline: none;"
                             type="password"
                             name="password"
