@@ -14,11 +14,13 @@ return new class extends Migration
     public function up(): void
     {
         //Table Asset
-        Schema::create('asset', function (Blueprint $table) {
-            $table->id();
+        Schema::create('assets', function (Blueprint $table) {
+            $table->uuid();
             $table->string('name');
-            $table->foreignId('locations_id')->constrained('locations')->onDelete('cascade');
-            $table->foreignId('categories_id')->constrained('categories')->onDelete('cascade');
+            $table->uuid('location_id');
+            $table->foreign('location_id')->references('id')->on('locations')->onDelete('restrict');
+            $table->uuid('categories_id');
+            $table->foreign('categories_id')->references('id')->on('categories')->onDelete('restrict');
             $table->string('custom_number');
             $table->string('account_fixed_asset');
             $table->string('description');
@@ -31,7 +33,7 @@ return new class extends Migration
             $table->string('accumulation_depreciation_account');
             $table->integer('accumulation_depreciation_value');
             $table->date('depreciation_date');
-            $table->foreignId('created_by_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('created_by_id')->constrained('users')->onDelete('restrict');
             $table->timestamps();
         });
     }
@@ -42,6 +44,6 @@ return new class extends Migration
     public function down(): void
     {
         //
-        Schema::dropIfExists('asset');
+        Schema::dropIfExists('assets');
     }
 };

@@ -10,14 +10,23 @@
                                 <thead class="thead-dark">
                                     <tr>
                                         <th>NAME</th>
-                                        <th>CATEGORY</th>
+                                        <th>LOKASI</th>
+                                        <th>KATEGORI</th>
+                                        <th>CUSTOM NUMBER</th>
+                                        <th>FIXED ASSET</th>
+                                        <th>DESKRIPSI</th>
+                                        <th>TANGGAL AKUSISI</th>
+                                        <th>ACCUISITION COST</th>
+                                        <th>DEPRECIATION</th>
+                                        <th>METHOD</th>
+                                        <th>USAGE PERIODE</th>
                                         <th>ACTION</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="text-bold-500">Michael Right</td>   
-                                        <td class="text-bold-500">Mesin & Peralatan</td>   
+                                        <td class="text-bold-500">Michael Right</td>
+                                        <td class="text-bold-500">Mesin & Peralatan</td>
                                         <td>
                                             <a href="view"><i class="badge-circle badge-circle-light-secondary text-dark font-medium-1" data-feather="eye"></i></a>
                                             <a href="/edit"><i class="badge-circle badge-circle-light-secondary text-success font-medium-1 mx-1" data-feather="edit"></i></a>

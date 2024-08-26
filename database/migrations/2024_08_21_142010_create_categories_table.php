@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //Table Location
-        Schema::create('locations', function (Blueprint $table) {
-            $table->id();
+        Schema::create('categories', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->string('name');
-            $table->foreignId('created_by_id')->constrained('users')->onDelete('cascade'); 
+            $table->foreignId('created_by_id')->constrained('users')->onDelete('restrict');
             $table->timestamps();
         });
     }
@@ -25,7 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
-        Schema::dropIfExists('locations');
+        Schema::dropIfExists('categories');
     }
 };

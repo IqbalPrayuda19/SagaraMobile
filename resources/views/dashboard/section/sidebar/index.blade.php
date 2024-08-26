@@ -21,18 +21,25 @@
         <div class="sidebar-menu h-full" style="overflow-y: none;">
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>
-            
+
                 <li class="sidebar-item {{ Request::is('dashboard') ? 'active' : ''}}">
                     <a href="/dashboard" class='sidebar-link'>
                         <i data-feather="home" style="color: #435ebe;"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
-            
-                <li class="sidebar-item {{ Request::is('assets') ? 'active' : ''}}">
+
+                <li class="sidebar-item {{ Request::is('assets', 'create') ? 'active' : ''}}">
                     <a id="btn-dropdown" href="/assets" class='sidebar-link'>
                         <i data-feather="file" style="color: #435ebe;"></i>
                         <span>Assets</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item {{ Request::is('history') ? 'active' : ''}}">
+                    <a id="btn-dropdown" href="/assets" class='sidebar-link'>
+                        <i data-feather="book-open" style="color: #435ebe;"></i>
+                        <span>History</span>
                     </a>
                 </li>
 

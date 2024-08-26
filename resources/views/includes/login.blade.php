@@ -42,10 +42,12 @@
                 </a>
             @endif
 
+            <a href="/register">register</a>
+
             <x-primary-button class="mt-4 bg-success">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
-        
+
     </form>
 </x-guest-layout>
