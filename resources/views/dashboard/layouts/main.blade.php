@@ -12,10 +12,10 @@
 
 <body>
     <script src="SagaraMobile/resources/initTheme.js"></script>
-        <div id="app" class="d-flex " style="width: 100vw; min-height: 100vh; ">
+        <div id="app" class="d-flex " style="width: 100vw; min-height: 100vh; padding-left: 299px;">
                 @include('dashboard.section.sidebar.index')   
 
-            <div style="width: 100%; max-width=100vw">
+            <div style="width: 100%; max-width=100vw;">
                 @include('dashboard.section.header.index')
                 @yield('container')
             </div>
