@@ -1,56 +1,65 @@
-            <div class="col-12 px-5 py-5">
+            <div class="col-12 px-5 py-5" style="font-family: 'Poppins', sans-serif;">
                 <div class="card px-5">
                     <div class="card-header d-flex justify-content-between">
-                        <h3 class="card-title">Assets</h3>
-                        <a href="/create"><i data-feather="plus"></i></a>
+                        <div>
+                            <h3 class="card-title">Assets</h3>
+                        </div>
+                        <div class="px-2">
+                            <a href="/create" class="px-2"><i data-feather="plus"></i></a>
+                            <i data-feather="folder-plus"></i>
+                        </div>
                     </div>
                     <div class="table-responsive" style="overflow-x: auto; display: block;">
                         <table class="table table-nowrap" style="overflow-x: auto; min-width: max-content;">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th width="5%" class="text-bold-500 text-center">Nama</th>
-                                    <th width="5%" class="text-bold-500 text-center">Lokasi</th>
-                                    <th width="5%" class="text-bold-500 text-center">Kategori</th>
-                                    <th width="5%" class="text-bold-500 text-center">Nomor Custom</th>
-                                    <th width="5%" class="text-bold-500 text-center">Aset Tetap</th>
-                                    <th width="5%" class="text-bold-500 text-center">Deskripsi</th>
-                                    <th width="5%" class="text-bold-500 text-center">Tanggal Akuisisi</th>
-                                    <th width="5%" class="text-bold-500 text-center">Biaya Akuisisi</th>
-                                    <th width="5%" class="text-bold-500 text-center">Depresiasi</th>
-                                    <th width="5%" class="text-bold-500 text-center">Metode</th>
-                                    <th width="5%" class="text-bold-500 text-center">Periode Penggunaan</th>
-                                    <th width="5%" class="text-bold-500 text-center">Nilai Penyusutan Pertahun</th>
-                                    <th width="5%" class="text-bold-500 text-center">depresiasi akun penyusutan</th>
-                                    <th width="5%" class="text-bold-500 text-center">akumulasi depresiasi akun penyusutan</th>
-                                    <th width="5%" class="text-bold-500 text-center">total penyusutan</th>
-                                    <th width="5%" class="text-bold-500 text-center">tanggal penyusutan</th>
-                                    <th width="5%" class="text-bold-500 text-center">Aksi</th>
+                                    <th class="text-bold-500 text-center">Nama</th>
+                                    <th class="text-bold-500 text-center">Lokasi</th>
+                                    <th class="text-bold-500 text-center">Kategori</th>
+                                    <th class="text-bold-500 text-center">Nomor Custom</th>
+                                    <th class="text-bold-500 text-center">Aset Tetap</th>
+                                    <th class="text-bold-500 text-center">Deskripsi</th>
+                                    <th class="text-bold-500 text-center">Tanggal Akuisisi</th>
+                                    <th class="text-bold-500 text-center">Biaya Akuisisi</th>
+                                    <th class="text-bold-500 text-center">Depresiasi</th>
+                                    <th class="text-bold-500 text-center">Metode</th>
+                                    <th class="text-bold-500 text-center">Periode Penggunaan</th>
+                                    <th class="text-bold-500 text-center">Nilai Penyusutan Pertahun</th>
+                                    <th class="text-bold-500 text-center">depresiasi akun penyusutan</th>
+                                    <th class="text-bold-500 text-center">akumulasi depresiasi akun penyusutan</th>
+                                    <th class="text-bold-500 text-center">total penyusutan</th>
+                                    <th class="text-bold-500 text-center">tanggal penyusutan</th>
+                                    <th class="text-bold-500 text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach ($assets as $asset )
                                 <tr>
-                                    <td width="5%"class="text-bold-500 text-center">Michael Right</td>
-                                    <td width="5%"class="text-bold-500 text-center">Toko KBB</td>
-                                    <td width="5%"class="text-bold-500 text-center">Mesin & Peralatan</td>
-                                    <td width="5%"class="text-bold-500 text-center">11-5-23-12</td>
-                                    <td width="5%"class="text-bold-500 text-center">Aset Tetap - Mesin & Peralatan</td>
-                                    <td width="5%"class="text-bold-500 text-center">handphone normal normal aja untuk KBS</td>
-                                    <td width="5%"class="text-bold-500 text-center">1/24/2023</td>
-                                    <td width="5%"class="text-bold-500 text-center"> 1,500,000 </td>
-                                    <td width="5%"class="text-bold-500 text-center">TIdak</td>
-                                    <td width="5%"class="text-bold-500 text-center">Straight Line</td>
-                                    <td width="5%"class="text-bold-500 text-center">2</td>
-                                    <td width="5%"class="text-bold-500 text-center">50%</td>
-                                    <td width="5%"class="text-bold-500 text-center">Penyusutan - Mesin & Peralatan</td>
-                                    <td width="5%"class="text-bold-500 text-center">Akumulasi Penyusutan - Mesin & Peralatan</td>
-                                    <td width="5%"class="text-bold-500 text-center">750000</td>
-                                    <td width="5%"class="text-bold-500 text-center">12/31/2023</td>
-                                    <td width="5%"class="text-bold-500 text-center">
-                                        <a href="view"><i class="badge-circle badge-circle-light-secondary text-dark font-medium-1" data-feather="eye"></i></a>
-                                        <a href="/edit"><i class="badge-circle badge-circle-light-secondary text-success font-medium-1 mx-1" data-feather="edit"></i></a>
-                                        <a href="/delete"><i class="badge-circle badge-circle-light-secondary text-danger font-medium-1" data-feather="trash"></i></a>
+                                    <td class="text-bold-500 text-center">{{ $asset->name}}</td>
+                                    <td class="text-bold-500 text-center">{{ $asset->location_id}}</td>
+                                    <td class="text-bold-500 text-center">{{ $asset->categories_id}}</td>
+                                    <td class="text-bold-500 text-center">{{ $asset->location_id}} - {{ $asset->categories_id}} - {{\Carbon\Carbon::parse( $asset->accuisition_date )->format('y')}}</td>
+                                    <td class="text-bold-500 text-center">{{ $asset->account_fixed_asset}}</td>
+                                    <td class="text-bold-500 text-center">{{ $asset->description}}</td>
+                                    <td class="text-bold-500 text-center">{{ $asset->accuisition_date}}</td>
+                                    <td class="text-bold-500 text-center">{{ $asset->accuisition_cost}} </td>
+                                    <td class="text-bold-500 text-center">{{ $asset->non_depreciation}}</td>
+                                    <td class="text-bold-500 text-center">{{ $asset->method}}</td>
+                                    <td class="text-bold-500 text-center">{{ $asset->usage_period}}</td>
+                                    <td class="text-bold-500 text-center">{{ $asset->usage_value_per_year}} % </td>
+                                    <td class="text-bold-500 text-center">{{ $asset->depreciation_account}}</td>
+                                    <td class="text-bold-500 text-center">{{ $asset->accumulation_depreciation_account}}</td>
+                                    <td class="text-bold-500 text-center">{{ $asset->accumulation_depreciation_value}}</td>
+                                    <td class="text-bold-500 text-center">{{ $asset->depreciation_date}}</td>
+                                    <td class="text-bold-500 text-center">
+                                    <form action="{{route('destroy', $asset->uuid)}}" method="POST">
+                                        @csrf
+                                        <a href="{{route('getEdit', $asset->uuid)}}"><i class="badge-circle badge-circle-light-secondary text-success font-medium-1 mx-1" data-feather="edit"></i></a>
+                                        <button type="submit"><i class="badge-circle badge-circle-light-secondary text-danger font-medium-1" data-feather="trash"></i></button>
+                                    </form>
                                     </td>
                                 </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

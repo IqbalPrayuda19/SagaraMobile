@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Assets;
+use App\Models\Categories;
+use App\Models\Locations;
 use App\Enums\Method;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class SagaraController extends Controller
 {
@@ -14,8 +19,9 @@ class SagaraController extends Controller
     public function getIndex()
     {
         //
-        $data = Assets::all();
-        return view ('dashboard.section.dashboard.index',$data);
+        $assets = Assets::all();
+        // dd ($assets);
+        return view ('dashboard.section.assets.index', compact('assets'));
     }
 
     /**
@@ -36,32 +42,121 @@ class SagaraController extends Controller
      */
     public function postStore(Request $request)
     {
+        // dd($request);
         // Validate the request data
-        $request->validate([
-            'uuid' => 'required|uuid',
-            'name' => 'required|string',
-            'locations_id' => 'required|exists:locations,id',
-            'categories_id' => 'required|exists:categories,id',
-            'custom_number' => 'nullable|string',
-            'account_fixed_asset' => 'nullable|string',
-            'description' => 'nullable|string',
-            'accuisition_date' => 'required|date',
-            'accuisition_cost' => 'required|integer',
-            'method' => 'required|in:' . implode(',', Method::values()),
-            'usage_period' => 'nullable|integer',
-            'usage_value_per_year' => 'nullable|integer',
-            'depreciation_account' => 'nullable|string',
-            'accumulation_depreciation_account' => 'nullable|string',
-            'accumulation_depreciation_value' => 'nullable|integer',
-            'depreciation_date' => 'nullable|date',
-            'created_by_id' => 'required|exists:users,id',
-        ]);
+        try {
+            //code...
+            $request->validate([
+                'name' => 'required|string',
+                'location_id' => 'required|exists:locations,id',
+                'categories_id' => 'required|exists:categories,id',
+                'account_fixed_asset' => 'nullable|string',
+                'description' => 'required|string',
+                'accuisition_date' => 'nullable|date',
+                'accuisition_cost' => 'nullable|integer',
+                // 'method' => ['nullable', Rule::in(array_column(Method::cases(), 'value'))],
+                'usage_period' => 'nullable|integer',
+                'usage_value_per_year' => 'nullable|integer',
+                'depreciation_account' => 'nullable|string',
+                'accumulation_depreciation_account' => 'nullable|string',
+                'accumulation_depreciation_value' => 'nullable|integer',
+                'depreciation_date' => 'nullable|date',
+            ]);
 
-        // Create a new Sagara instance
-        $sagara_mobile = Assets::create($request->all());
+            // Create a new Sagara instance
+            $uuid = Str::uuid();
+            $location = $request->location_id;
+            $category = $request->categories_id;
+            $year = \Carbon\Carbon::parse( $request->accuisition_date )->format('y');
+            $custom = $location.'-'.$category.'-'.$year;
+            $method = $request->method;
+            if ($request->non_depreciation == null){
+                if($method == 'STRAIGHT_LINE'){
+                    $assets = Assets::create([
+                        'uuid' => $uuid,
+                        'name' => $request->name,
+                        'location_id' => $request->location_id,
+                        'categories_id' => $request->categories_id,
+                        'account_fixed_asset' => $request->account_fixed_asset,
+                        'description' => $request->description,
+                        'custom_number' => $custom,
+                        'non_depreciation' => 0,
+                        'accuisition_date' => $request->accuisition_date,
+                        'accuisition_cost' => $request->accuisition_cost,
+                        'method' => Method::STRAIGHT_LINE,
+                        'usage_period' => $request->usage_period,
+                        'usage_value_per_year' => $request->usage_value_per_year,
+                        'depreciation_account' => $request->depreciation_account,
+                        'accumulation_depreciation_account' => $request->accumulation_depreciation_account,
+                        'accumulation_depreciation_value' => $request->accumulation_depreciation_value,
+                        'depreciation_date' => $request->depreciation_date,
+                        'created_by_id' => Auth::user()->id,
+                    ]);
+                }
+                elseif ($method == 'REDUCING_BALANCE'){
+                    $assets = Assets::create([
+                        'uuid' => $uuid,
+                        'name' => $request->name,
+                        'location_id' => $request->location_id,
+                        'categories_id' => $request->categories_id,
+                        'account_fixed_asset' => $request->account_fixed_asset,
+                        'description' => $request->description,
+                        'custom_number' => $custom,
+                        'non_depreciation' => 0,
+                        'accuisition_date' => $request->accuisition_date,
+                        'accuisition_cost' => $request->accuisition_cost,
+                        'method' => Method::REDUCING_BALANCE,
+                        'usage_period' => $request->usage_period,
+                        'usage_value_per_year' => $request->usage_value_per_year,
+                        'depreciation_account' => $request->depreciation_account,
+                        'accumulation_depreciation_account' => $request->accumulation_depreciation_account,
+                        'accumulation_depreciation_value' => $request->accumulation_depreciation_value,
+                        'depreciation_date' => $request->depreciation_date,
+                        'created_by_id' => Auth::user()->id,
+                    ]);
+                }
+            }
+            else{
+                if($method == 'STRAIGHT_LINE'){
+                    $assets = Assets::create([
+                        'uuid' => $uuid,
+                        'name' => $request->name,
+                        'location_id' => $request->location_id,
+                        'categories_id' => $request->categories_id,
+                        'account_fixed_asset' => $request->account_fixed_asset,
+                        'description' => $request->description,
+                        'custom_number' => $custom,
+                        'non_depreciation' => 1,
+                        'accuisition_date' => $request->accuisition_date,
+                        'accuisition_cost' => $request->accuisition_cost,
+                        'created_by_id' => Auth::user()->id,
+                    ]);
+                }
+                elseif ($method == 'REDUCING_BALANCE'){
+                    $assets = Assets::create([
+                        'uuid' => $uuid,
+                        'name' => $request->name,
+                        'location_id' => $request->location_id,
+                        'categories_id' => $request->categories_id,
+                        'account_fixed_asset' => $request->account_fixed_asset,
+                        'description' => $request->description,
+                        'custom_number' => $custom,
+                        'non_depreciation' => 1,
+                        'accuisition_date' => $request->accuisition_date,
+                        'accuisition_cost' => $request->accuisition_cost,
+                        'created_by_id' => Auth::user()->id,
+                    ]);
+                }
+            }
 
-        // Redirect to the index page with a success message
-        return redirect()->route('dashboard.section.create.getIndex')->with('success', 'Item Added successfully.');
+            // Redirect to the index page with a success message
+            return redirect()->route('getIndex')->with('success', 'Item Added successfully.');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                "error"=>$th->getMessage(),
+            ]);
+        };
     }
 
     /**
@@ -77,11 +172,11 @@ class SagaraController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function getEdit(string $id)
+    public function getEdit(string $uuid)
     {
         //
-        $sagara_mobile = Assets::find($id);
-        return view('', compact('sagara_mobile'));
+        $assets = Assets::where('uuid', $uuid);
+        return view('dashboard.section.edit.index', compact('assets'));
     }
 
     /**
@@ -91,31 +186,122 @@ class SagaraController extends Controller
      * @param  \App\Models\SarungController  $sagaraController
      * @return \Illuminate\Http\Response
      */
-    public function postUpdate(Request $request, string $id)
+    public function postUpdate(Request $request, string $uuid)
     {
-        $sagara_mobile = Assets::find($id);
-        $sagara_mobile->name = $request->input('name');
-        $sagara_mobile->locations_id = $request->input('locations_id');
-        $sagara_mobile->categories_id = $request->input('categories_id');
-        $sagara_mobile->custom_number = $request->input('custom_number');
-        $sagara_mobile->account_fixed_asset = $request->input('account_fixed_asset');
-        $sagara_mobile->description = $request->input('description');
-        $sagara_mobile->accuisition_date = $request->input('accuisition_date');
-        $sagara_mobile->accuisition_cost = $request->input('accuisition_cost');
-        $sagara_mobile->method = $request->input('method');
-        $sagara_mobile->usage_period = $request->input('usage_period');
-        $sagara_mobile->usage_value_per_year = $request->input('usage_value_per_year');
-        $sagara_mobile->depreciation_account = $request->input('depreciation_account');
-        $sagara_mobile->accumulation_depreciation_account = $request->input('accumulation_depreciation_account');
-        $sagara_mobile->accumulation_depreciation_value = $request->input('accumulation_depreciation_value');
-        $sagara_mobile->depreciation_date = $request->input('depreciation_date');
-        $sagara_mobile->created_by_id = $request->input('created_by_id');
+        try {
+            //code...
+            $assets = Assets::where('uuid', $uuid);
+            $request->validate([
+                'name' => 'required|string',
+                'location_id' => 'required|exists:locations,id',
+                'categories_id' => 'required|exists:categories,id',
+                'account_fixed_asset' => 'nullable|string',
+                'description' => 'required|string',
+                'accuisition_date' => 'nullable|date',
+                'accuisition_cost' => 'nullable|integer',
+                // 'method' => ['nullable', Rule::in(array_column(Method::cases(), 'value'))],
+                'usage_period' => 'nullable|integer',
+                'usage_value_per_year' => 'nullable|integer',
+                'depreciation_account' => 'nullable|string',
+                'accumulation_depreciation_account' => 'nullable|string',
+                'accumulation_depreciation_value' => 'nullable|integer',
+                'depreciation_date' => 'nullable|date',
+            ]);
 
-        $input = $request->all();
+            // Create a new Sagara instance
+            $uuid = Str::uuid();
+            $location = $request->location_id;
+            $category = $request->categories_id;
+            $year = \Carbon\Carbon::parse( $request->accuisition_date )->format('y');
+            $custom = $location.'-'.$category.'-'.$year;
+            $method = $request->method;
+            if ($request->non_depreciation == null){
+                if($method == 'STRAIGHT_LINE'){
+                    $assets->update([
+                        'uuid' => $uuid,
+                        'name' => $request->name,
+                        'location_id' => $request->location_id,
+                        'categories_id' => $request->categories_id,
+                        'account_fixed_asset' => $request->account_fixed_asset,
+                        'description' => $request->description,
+                        'custom_number' => $custom,
+                        'non_depreciation' => 0,
+                        'accuisition_date' => $request->accuisition_date,
+                        'accuisition_cost' => $request->accuisition_cost,
+                        'method' => Method::STRAIGHT_LINE,
+                        'usage_period' => $request->usage_period,
+                        'usage_value_per_year' => $request->usage_value_per_year,
+                        'depreciation_account' => $request->depreciation_account,
+                        'accumulation_depreciation_account' => $request->accumulation_depreciation_account,
+                        'accumulation_depreciation_value' => $request->accumulation_depreciation_value,
+                        'depreciation_date' => $request->depreciation_date,
+                        'created_by_id' => Auth::user()->id,
+                    ]);
+                }
+                elseif ($method == 'REDUCING_BALANCE'){
+                    $assets->update([
+                        'uuid' => $uuid,
+                        'name' => $request->name,
+                        'location_id' => $request->location_id,
+                        'categories_id' => $request->categories_id,
+                        'account_fixed_asset' => $request->account_fixed_asset,
+                        'description' => $request->description,
+                        'custom_number' => $custom,
+                        'non_depreciation' => 0,
+                        'accuisition_date' => $request->accuisition_date,
+                        'accuisition_cost' => $request->accuisition_cost,
+                        'method' => Method::REDUCING_BALANCE,
+                        'usage_period' => $request->usage_period,
+                        'usage_value_per_year' => $request->usage_value_per_year,
+                        'depreciation_account' => $request->depreciation_account,
+                        'accumulation_depreciation_account' => $request->accumulation_depreciation_account,
+                        'accumulation_depreciation_value' => $request->accumulation_depreciation_value,
+                        'depreciation_date' => $request->depreciation_date,
+                        'created_by_id' => Auth::user()->id,
+                    ]);
+                }
+            }
+            else{
+                if($method == 'STRAIGHT_LINE'){
+                    $assets->update([
+                        'uuid' => $uuid,
+                        'name' => $request->name,
+                        'location_id' => $request->location_id,
+                        'categories_id' => $request->categories_id,
+                        'account_fixed_asset' => $request->account_fixed_asset,
+                        'description' => $request->description,
+                        'custom_number' => $custom,
+                        'non_depreciation' => 1,
+                        'accuisition_date' => $request->accuisition_date,
+                        'accuisition_cost' => $request->accuisition_cost,
+                        'created_by_id' => Auth::user()->id,
+                    ]);
+                }
+                elseif ($method == 'REDUCING_BALANCE'){
+                    $assets->update([
+                        'uuid' => $uuid,
+                        'name' => $request->name,
+                        'location_id' => $request->location_id,
+                        'categories_id' => $request->categories_id,
+                        'account_fixed_asset' => $request->account_fixed_asset,
+                        'description' => $request->description,
+                        'custom_number' => $custom,
+                        'non_depreciation' => 1,
+                        'accuisition_date' => $request->accuisition_date,
+                        'accuisition_cost' => $request->accuisition_cost,
+                        'created_by_id' => Auth::user()->id,
+                    ]);
+                }
+            }
 
-        $sagara_mobile->update($input);
-
-        return redirect()->route('dashboard.section.create.getIndex')->with('success', 'Item Updated successfully.');
+            // Redirect to the index page with a success message
+            return redirect()->route('getIndex')->with('success', 'Item Added successfully.');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                "error"=>$th->getMessage(),
+            ]);
+        };
     }
 
     /**
@@ -124,11 +310,27 @@ class SagaraController extends Controller
      * @param  \App\Models\SarungController  $sagaraController
      * @return \Illuminate\Http\Response
      */
-    public function destroy(string $id)
+    public function destroy(string $uuid)
     {
         //
-        $sagara_mobile = Assets::find($id);
-        $sagara_mobile->delete();
-        return redirect()->route('dashboard.section.create.getIndex')->with('Success','Item Deleted Successfully');
+        try {
+            //code...
+            $assets = Assets::where('uuid', $uuid);
+            // dd($assets);
+            $assets->delete();
+            return redirect()->route('getIndex')->with('Success','Item Deleted Successfully');
+        } catch (\Throwable $th) {
+            // throw $th;
+            return response()->json([
+                "error"=>$th->getMessage(),
+            ]);
+        }
+    }
+
+    public function create()
+    {
+        $categories = Categories::all();
+        $locations = Locations::all();
+        return view('dashboard.section.create.index', compact(['categories', 'locations']));
     }
 }

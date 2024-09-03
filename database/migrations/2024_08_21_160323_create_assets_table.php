@@ -26,7 +26,8 @@ return new class extends Migration
             $table->string('description');
             $table->date('accuisition_date');
             $table->integer('accuisition_cost');
-            $table->enum('method', Method::values());
+            $table->string('non_depreciation');
+            $table->string('method');
             $table->integer('usage_period');
             $table->integer('usage_value_per_year');
             $table->string('depreciation_account');
