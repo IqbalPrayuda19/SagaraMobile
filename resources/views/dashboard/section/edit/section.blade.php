@@ -6,7 +6,7 @@
             <i data-feather="arrow-left" class="me-2" style="font-size: 2rem;"></i>
         </a>
         <div class="card-body px-4 py-2">
-            <form action="{{route('postUpdate')}}" method="POST">
+            <form action="{{route('postUpdate', [$assets->uuid])}}" method="POST">
                 @csrf
                 <h4 class="card-title mt-5">Penyimpanan Aset Baru</h4>
                 <div class="row g-3 mt-2">

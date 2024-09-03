@@ -175,8 +175,10 @@ class SagaraController extends Controller
     public function getEdit(string $uuid)
     {
         //
-        $assets = Assets::where('uuid', $uuid);
-        return view('dashboard.section.edit.index', compact('assets'));
+        $assets = Assets::where('uuid', $uuid)->first();
+        $locations = Locations::all();
+        $categories = Categories::all();
+        return view('dashboard.section.edit.index', compact('assets', 'locations', 'categories'));
     }
 
     /**
@@ -190,7 +192,7 @@ class SagaraController extends Controller
     {
         try {
             //code...
-            $assets = Assets::where('uuid', $uuid);
+            $assets = Assets::where('uuid', $uuid)->first();
             $request->validate([
                 'name' => 'required|string',
                 'location_id' => 'required|exists:locations,id',
@@ -209,7 +211,6 @@ class SagaraController extends Controller
             ]);
 
             // Create a new Sagara instance
-            $uuid = Str::uuid();
             $location = $request->location_id;
             $category = $request->categories_id;
             $year = \Carbon\Carbon::parse( $request->accuisition_date )->format('y');
@@ -218,7 +219,6 @@ class SagaraController extends Controller
             if ($request->non_depreciation == null){
                 if($method == 'STRAIGHT_LINE'){
                     $assets->update([
-                        'uuid' => $uuid,
                         'name' => $request->name,
                         'location_id' => $request->location_id,
                         'categories_id' => $request->categories_id,
@@ -240,7 +240,6 @@ class SagaraController extends Controller
                 }
                 elseif ($method == 'REDUCING_BALANCE'){
                     $assets->update([
-                        'uuid' => $uuid,
                         'name' => $request->name,
                         'location_id' => $request->location_id,
                         'categories_id' => $request->categories_id,
@@ -264,7 +263,6 @@ class SagaraController extends Controller
             else{
                 if($method == 'STRAIGHT_LINE'){
                     $assets->update([
-                        'uuid' => $uuid,
                         'name' => $request->name,
                         'location_id' => $request->location_id,
                         'categories_id' => $request->categories_id,
@@ -279,7 +277,6 @@ class SagaraController extends Controller
                 }
                 elseif ($method == 'REDUCING_BALANCE'){
                     $assets->update([
-                        'uuid' => $uuid,
                         'name' => $request->name,
                         'location_id' => $request->location_id,
                         'categories_id' => $request->categories_id,
