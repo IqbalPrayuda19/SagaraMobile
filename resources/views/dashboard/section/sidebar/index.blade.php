@@ -43,6 +43,13 @@
                     </a>
                 </li>
 
+                <li class="sidebar-item {{ Request::is('setting') ? 'active' : ''}}">
+                    <a id="btn-dropdown" href="/settings" class='sidebar-link'>
+                        <i data-feather="settings" style="color: #435ebe;"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+
                 <li class="sidebar-item">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

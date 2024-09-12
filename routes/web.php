@@ -21,6 +21,18 @@ Route::get('/edit/{uuid}', [App\Http\Controllers\SagaraController::class, 'getEd
 Route::post('/edit/{uuid}', [App\Http\Controllers\SagaraController::class, 'postUpdate'])->middleware(['auth', 'verified'])->name('postUpdate');
 // delete
 Route::post('/delete/{uuid}', [App\Http\Controllers\SagaraController::class, 'destroy'])->middleware(['auth', 'verified'])->name('destroy');
+//setting sama fadhlan
+Route::get('/settings', function () {
+    return view('dashboard.section.settings.index');
+})->middleware(['auth', 'verified'])->name('settings');
+
+Route::get('/createCategory', function () {
+    return view('dashboard.section.createCategory.index');
+})->middleware(['auth', 'verified'])->name('settings');
+
+Route::get('/createLocation', function () {
+    return view('dashboard.section.createLocation.index');
+})->middleware(['auth', 'verified'])->name('createLocation');
 
 // auth
 Route::middleware('auth')->group(function () {

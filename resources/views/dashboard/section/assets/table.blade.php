@@ -1,4 +1,4 @@
-            <div class="col-12 px-5 py-5" style="font-family: 'Poppins', sans-serif;">
+<div class="col-12 px-5 py-5" style="font-family: 'Poppins', sans-serif;">
                 <div class="card px-5">
                     <div class="card-header d-flex justify-content-between">
                         <div>
@@ -32,6 +32,7 @@
                                     <th class="text-bold-500 text-center">Aksi</th>
                                 </tr>
                             </thead>
+                            @if(count($assets) > 0)
                             <tbody>
                                 @foreach ($assets as $asset )
                                 <tr>
@@ -55,12 +56,19 @@
                                     <form action="{{route('destroy', $asset->uuid)}}" method="POST">
                                         @csrf
                                         <a href="{{route('getEdit', $asset->uuid)}}"><i class="badge-circle badge-circle-light-secondary text-success font-medium-1 mx-1" data-feather="edit"></i></a>
-                                        <button type="submit"><i class="badge-circle badge-circle-light-secondary text-danger font-medium-1" data-feather="trash"></i></button>
+                                        <button type="submit" onclick="return confirm('Hapus Data Aset?')"><i class="badge-circle badge-circle-light-secondary text-danger font-medium-1" data-feather="trash"></i></button>
                                     </form>
                                     </td>
                                 </tr>
                                 @endforeach
                             </tbody>
+                            @else
+                            <tbody>
+                                <tr>
+                                    <td colspan="17" class="text-center text-bold-500">Tidak ada assets</td>
+                                </tr>
+                            </tbody>
+                            @endif
                         </table>
                     </div>
                 </div>
