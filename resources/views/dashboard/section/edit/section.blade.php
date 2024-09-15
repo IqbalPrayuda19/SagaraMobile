@@ -50,7 +50,7 @@
                     <div class="col-md-6">
                         <label for="akun-asset" class="form-label fw-semibold">Kategori</label>
                             <select name="categories_id" class="form-select" id="akun-asset">
-                                <option value="" selected disabled> Pilih </option>
+                                <option value="" disabled> Pilih </option>
                                @foreach ($categories as $category )
                                     <option value="{{$category->id}} {{$assets->category_id == $category->id ? 'selected':''}}">{{$category->name}}</option>
                                @endforeach
@@ -88,7 +88,7 @@
                         <div class="mb-3">
                             <label for="akun-dikreditkan" class="form-label fw-semibold">Metode</label>
                             <select name="method" class="form-select" id="Metode">
-                                <option value="" selected disabled> Pilih </option>
+                                <option value="" disabled> Pilih </option>
                                 @foreach (\App\Enums\Method::cases() as $method)
                                     <option value="{{ $method->name }}" {{$assets->method}}>{{ $method->value }}</option>
                                 @endforeach
@@ -99,7 +99,7 @@
                         <div class="mb-3">
                             <label for="akun-dikreditkan" class="form-label fw-semibold">Depresiasi Akun Penyusutan</label>
                             <select name="depreciation_account" class="form-select" id="Akun penyusutan">
-                                <option value="" selected disabled> Pilih </option>
+                                <option value="" disabled> Pilih </option>
                                 <option value="Penyusutan - Bangunan" {{$assets->depreciation_account == 'Penyusutan - Bangunan' ? 'selected':''}}>Penyusutan - Bangunan</option>
                                 <option value="Penyusutan - Building Improvements" {{$assets->depreciation_account == 'Penyusutan - Building Improvements' ? 'selected':''}}>Penyusutan - Building Improvementsi</option>
                                 <option value="Penyusutan - Kendaraan" {{$assets->depreciation_account == 'Penyusutan - Kendaraan' ? 'selected':''}}>Penyusutan - Kendaraan</option>
@@ -121,7 +121,7 @@
                         <div class="mb-3">
                             <label for="akun-dikreditkan" class="form-label fw-semibold">Akumulasi  Depresiasi Akun Penyusutan</label>
                             <select name="accumulation_depreciation_account" class="form-select" id="Akumulasi Akun Penyusutan">
-                                <option value="" selected disabled> Pilih </option>
+                                <option value="" disabled> Pilih </option>
                                 <option value="Akumulasi Penyusutan - Bangunan" {{$assets->accumulation_depreciation_account == 'Akumulasi Penyusutan - Bangunan' ? 'selected':''}}>Akumulasi Penyusutan - Bangunan</option>
                                 <option value="Akumulasi Penyusutan - Building Improvements" {{$assets->accumulation_depreciation_account == 'Akumulasi Penyusutan - Building Improvements' ? 'selected':''}}>Akumulasi Penyusutan - Building Improvements</option>
                                 <option value="Akumulasi penyusutan - Kendaraan" {{$assets->accumulation_depreciation_account == 'Akumulasi penyusutan - Kendaraan' ? 'selected':''}}>Akumulasi penyusutan - Kendaraan</option>

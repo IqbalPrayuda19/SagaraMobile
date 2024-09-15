@@ -330,4 +330,58 @@ class SagaraController extends Controller
         $locations = Locations::all();
         return view('dashboard.section.create.index', compact(['categories', 'locations']));
     }
+
+    public function getLocations()
+    {
+        return view('dashboard.section.settings.createLocations.index');
+
+    }
+
+    public function createLocations (Request $request)
+    {
+        try {
+            //code...
+            $request->validate([
+                'name' => 'required|string',
+            ]);
+
+            $locations = Locations::create([
+                'name' => $request->name,
+                'created_by_id' => Auth::user()->id,
+            ]);
+            return redirect()->route('settings')->with('Success','Item Add Successfully');
+        } catch (\Throwable $th) {
+            // throw $th;
+            return response()->json([
+                "error"=>$th->getMessage(),
+            ]);
+        }
+    }
+
+    public function getCategories()
+    {
+        return view('dashboard.section.settings.createCategories.index');
+
+    }
+
+    public function createCategories (Request $request)
+    {
+        try {
+            //code...
+            $request->validate([
+                'name' => 'required|string',
+            ]);
+
+            $categories = Categories::create([
+                'name' => $request->name,
+                'created_by_id' => Auth::user()->id,
+            ]);
+            return redirect()->route('settings')->with('Success','Item Add Successfully');
+        } catch (\Throwable $th) {
+            // throw $th;
+            return response()->json([
+                "error"=>$th->getMessage(),
+            ]);
+        }
+    }
 }

@@ -43,7 +43,7 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item {{ Request::is('setting') ? 'active' : ''}}">
+                <li class="sidebar-item {{ Request::is('settings') ? 'active' : ''}}">
                     <a id="btn-dropdown" href="/settings" class='sidebar-link'>
                         <i data-feather="settings" style="color: #435ebe;"></i>
                         <span>Settings</span>

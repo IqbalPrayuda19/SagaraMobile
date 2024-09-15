@@ -1,7 +1,7 @@
 @extends('dashboard.layouts.main')
 
 @section('container')
-    @include('dashboard.section.createCategory.section')
+    @include('dashboard.section.settings.createCategories.section')
 @endsection
 
 

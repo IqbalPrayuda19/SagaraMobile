@@ -13,7 +13,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="detail-asset" class="form-label fw-semibold">Nama aset</label>
-                            <input name="name" type="text" class="form-control" placeholder="Nama Aset">
+                            <input name="name" type="text" class="form-control" id="nama aset" placeholder="Nama Aset">
                         </div>
                         <div class="mb-3">
                             <label for="nomor-asset" class="form-label fw-semibold">Lokasi</label>
@@ -28,7 +28,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                         <label for="nomor-asset" class="form-label fw-semibold">Akun Aset Tetap</label>
-                            <select name="account_fixed_asset" class="form-select" >
+                            <select name="account_fixed_asset" class="form-select" id="akun-asset-tetap">
                                 <option value="" selected disabled> Pilih </option>
                                 <option value="Aset Tetap - Tanah">Aset Tetap - Tanah</option>
                                 <option value="Aset Tetap - Bangunan">Aset Tetap - Bangunan</option>
@@ -42,14 +42,14 @@
                         </div>
                         <div class="mb-3">
                             <label for="nomor-asset" class="form-label fw-semibold">Deskripsi</label>
-                            <input name="description" type="text" class="form-control" placeholder="Deskripsi">
+                            <input name="description" type="text" class="form-control" id="Deskripsi" placeholder="Deskripsi">
                         </div>
                     </div>
                 </div>
                 <div class="row g-3 mt-2">
                     <div class="col-md-6">
                         <label for="akun-asset" class="form-label fw-semibold">Kategori</label>
-                            <select name="categories_id" class="form-select">
+                            <select name="categories_id" class="form-select" id="akun-asset">
                                 <option value="" selected disabled> Pilih </option>
                                @foreach ($categories as $category )
                                     <option value="{{$category->id}}">{{$category->name}}</option>
@@ -71,42 +71,15 @@
                             <label for="biaya-akuisisi" class="form-label fw-semibold">Biaya Akuisisi</label>
                             <div class="input-group">
                                 <input name="accuisition_cost" type="text" class="form-control"
-                                    aria-label="Rupiah amount (with dot and two decimal places)"
+                                    aria-label="Dollar amount (with dot and two decimal places)"
                                     id="biaya-akuisisi" placeholder="Biaya Akuisisi">
                             </div>
                         </div>
                     </div>
                 </div>
-                // 
                 <h4 class="card-title mt-4 mb-4">Penyusutan</h4>
                 <div class="checkbox mb-4">
-                    <input name="non_depreciation" type="checkbox" class="form-check-input me-2 cursor-pointer" id="checkbox2" onchange="
-                        const metode = document.getElementById('Metode');
-                        const akunPenyusutan = document.getElementById('Akun penyusutan');
-                        const periodePenggunaan = document.getElementById('Periode Penggunaan');
-                        const akumulasiAkunPenyusutan = document.getElementById('Akumulasi Akun Penyusutan');
-                        const nilaiPenyusutan = document.getElementById('Nilai Penyusutan');
-                        const totalPenyusutan = document.getElementById('Penyusutan');
-                        const tanggalPenyusutan = document.getElementById('Tanggal Penyusutan');
-
-                        if (this.checked) {
-                            metode.disabled = false;
-                            akunPenyusutan.disabled = false;
-                            periodePenggunaan.disabled = false;
-                            akumulasiAkunPenyusutan.disabled = false;
-                            nilaiPenyusutan.disabled = false;
-                            totalPenyusutan.disabled = false;
-                            tanggalPenyusutan.disabled = false;
-                        } else {
-                            metode.disabled = true;
-                            akunPenyusutan.disabled = true;
-                            periodePenggunaan.disabled = true;
-                            akumulasiAkunPenyusutan.disabled = true;
-                            nilaiPenyusutan.disabled = true;
-                            totalPenyusutan.disabled = true;
-                            tanggalPenyusutan.disabled = true;
-                        }
-                    ">
+                    <input name="non_depreciation" type="checkbox" class="form-check-input me-2 cursor-pointer" id="checkbox2">
                         <label for="checkbox2">Assets non Depresiasi</label>
                     </div>
                 <div class="mb-3">
@@ -114,7 +87,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="akun-dikreditkan" class="form-label fw-semibold">Metode</label>
-                            <select name="method" class="form-select" id="Metode" disabled>
+                            <select name="method" class="form-select" id="Metode">
                                 <option value="" selected disabled> Pilih </option>
                                 @foreach (\App\Enums\Method::cases() as $method)
                                     <option value="{{ $method->name }}">{{ $method->value }}</option>
@@ -125,7 +98,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="akun-dikreditkan" class="form-label fw-semibold">Depresiasi Akun Penyusutan</label>
-                            <select name="depreciation_account" class="form-select" id="Akun penyusutan" disabled>
+                            <select name="depreciation_account" class="form-select" id="Akun penyusutan">
                                 <option value="" selected disabled> Pilih </option>
                                 <option value="Penyusutan - Bangunan">Penyusutan - Bangunan</option>
                                 <option value="Penyusutan - Building Improvements">Penyusutan - Building Improvementsi</option>
@@ -141,13 +114,13 @@
                     <div class="col-md-6">
                         <label for="akun-dikreditkan" class="form-label fw-semibold">Periode Penggunaan</label>
                         <div class="mb-3">
-                            <input name="usage_period" type="text" class="form-control" id="Periode Penggunaan" placeholder="Periode Penggunaan" disabled>
+                            <input name="usage_period" type="text" class="form-control" id="Periode Penggunaan" placeholder="Periode Penggunaan">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="akun-dikreditkan" class="form-label fw-semibold">Akumulasi  Depresiasi Akun Penyusutan</label>
-                            <select name="accumulation_depreciation_account" class="form-select" id="Akumulasi Akun Penyusutan" disabled>
+                            <select name="accumulation_depreciation_account" class="form-select" id="Akumulasi Akun Penyusutan">
                                 <option value="" selected disabled> Pilih </option>
                                 <option value="Akumulasi Penyusutan - Bangunan">Akumulasi Penyusutan - Bangunan</option>
                                 <option value="Akumulasi Penyusutan - Building Improvements">Akumulasi Penyusutan - Building Improvements</option>
@@ -164,19 +137,19 @@
                     <div class="col-md-6">
                         <label for="akun-dikreditkan" class="form-label fw-semibold">Nilai Penyusutan Pertahun</label>
                         <div class="mb-3">
-                            <input name="usage_value_per_year" type="text" class="form-control" id="Nilai Penyusutan" placeholder="Nilai Penyusutan" disabled>
+                            <input name="usage_value_per_year" type="text" class="form-control" id="Nilai Penyusutan" placeholder="Nilai Penyusutan">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="detail-asset" class="form-label fw-semibold">Total Penyusutan</label>
-                            <input name="accumulation_depreciation_value" type="text" class="form-control" id="Penyusutan" placeholder="Total Penyusutan" disabled>
+                            <input name="accumulation_depreciation_value" type="text" class="form-control" id="Penyusutan" placeholder="Total Penyusutan">
                         </div>
                     </div>
                 </div>
                 <div class="mb-4 mt-2">
                     <label for="tanggal-akuisisi" class="form-label fw-semibold">Tanggal Penyusutan</label>
-                    <input name="depreciation_date" type="date" class="form-control" id="Tanggal Penyusutan" disabled>
+                    <input name="depreciation_date" type="date" class="form-control" id="Tanggal Penyusutan">
                 </div>
                 <div class="d-grid gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">simpan</button>
@@ -185,5 +158,3 @@
             </form>
         </div>
     </div>
-
-

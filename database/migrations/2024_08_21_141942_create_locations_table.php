@@ -13,7 +13,7 @@ return new class extends Migration
     {
         //Table Location
         Schema::create('locations', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('name');
             $table->foreignId('created_by_id')->constrained('users')->onDelete('restrict');
             $table->timestamps();

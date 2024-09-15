@@ -17,9 +17,9 @@ return new class extends Migration
         Schema::create('assets', function (Blueprint $table) {
             $table->uuid();
             $table->string('name');
-            $table->uuid('location_id');
+            $table->unsignedBigInteger('location_id');
             $table->foreign('location_id')->references('id')->on('locations')->onDelete('restrict');
-            $table->uuid('categories_id');
+            $table->unsignedBigInteger('categories_id');
             $table->foreign('categories_id')->references('id')->on('categories')->onDelete('restrict');
             $table->string('custom_number');
             $table->string('account_fixed_asset');

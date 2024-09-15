@@ -21,7 +21,6 @@
                                     <th class="text-bold-500 text-center">Deskripsi</th>
                                     <th class="text-bold-500 text-center">Tanggal Akuisisi</th>
                                     <th class="text-bold-500 text-center">Biaya Akuisisi</th>
-                                    <th class="text-bold-500 text-center">Depresiasi</th>
                                     <th class="text-bold-500 text-center">Metode</th>
                                     <th class="text-bold-500 text-center">Periode Penggunaan</th>
                                     <th class="text-bold-500 text-center">Nilai Penyusutan Pertahun</th>
@@ -44,7 +43,6 @@
                                     <td class="text-bold-500 text-center">{{ $asset->description}}</td>
                                     <td class="text-bold-500 text-center">{{ $asset->accuisition_date}}</td>
                                     <td class="text-bold-500 text-center">{{ $asset->accuisition_cost}} </td>
-                                    <td class="text-bold-500 text-center">{{ $asset->non_depreciation}}</td>
                                     <td class="text-bold-500 text-center">{{ $asset->method}}</td>
                                     <td class="text-bold-500 text-center">{{ $asset->usage_period}}</td>
                                     <td class="text-bold-500 text-center">{{ $asset->usage_value_per_year}} % </td>

@@ -10,7 +10,7 @@ class Locations extends Model
     use HasFactory;
 
     protected $fillable = [
-        'uuid',
+        'id',
         'name',
         'created_by_id',
     ];
