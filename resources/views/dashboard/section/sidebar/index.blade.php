@@ -53,8 +53,21 @@
                 <li class="sidebar-item">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
+                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                         <button form="logout" href="{{route('logout')}}" onclick="event.preventDefault();
-                                this.closest('form').submit();" class='sidebar-link cursor-pointer border-0 bg-white fw-bold'>
+                                Swal.fire({
+                                    title: 'Yakin?',
+                                    text: 'Anda akan keluar dari aplikasi!',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Ya, keluar!'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        this.closest('form').submit();
+                                    }
+                                });" class='sidebar-link cursor-pointer border-0 bg-white fw-bold'>
                             <i data-feather="log-out" style="color: #435ebe;"></i>
                             <span>Logout</span>
                         </button>

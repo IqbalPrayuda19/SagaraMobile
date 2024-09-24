@@ -70,7 +70,7 @@
                         <div class="mb-3">
                             <label for="biaya-akuisisi" class="form-label fw-semibold">Biaya Akuisisi</label>
                             <div class="input-group">
-                                <input name="accuisition_cost" type="text" class="form-control"
+                                <input name="accuisition_cost" type="number" class="form-control"
                                     aria-label="Dollar amount (with dot and two decimal places)"
                                     id="biaya-akuisisi" placeholder="Biaya Akuisisi">
                             </div>
@@ -79,7 +79,40 @@
                 </div>
                 <h4 class="card-title mt-4 mb-4">Penyusutan</h4>
                 <div class="checkbox mb-4">
-                    <input name="non_depreciation" type="checkbox" class="form-check-input me-2 cursor-pointer" id="checkbox2">
+                   <input name="non_depreciation" type="checkbox" class="form-check-input me-2 cursor-pointer" id="checkbox2" value="1" onchange="
+                        const method = document.getElementById('Metode');
+                        const depreciationAccount = document.getElementById('Akun penyusutan');
+                        const usagePeriod = document.getElementById('Periode Penggunaan');
+                        const accumulationDepreciationAccount = document.getElementById('Akumulasi Akun Penyusutan');
+                        const usageValuePerYear = document.getElementById('Nilai Penyusutan');
+                        const accumulationDepreciationValue = document.getElementById('Penyusutan');
+                        const depreciationDate = document.getElementById('Tanggal Penyusutan');
+
+                        if (this.checked) {
+                            method.disabled = true;
+                            method.value = '';
+                            depreciationAccount.disabled = true;
+                            depreciationAccount.value = '';
+                            usagePeriod.disabled = true;
+                            usagePeriod.value = '';
+                            accumulationDepreciationAccount.disabled = true;
+                            accumulationDepreciationAccount.value = '';
+                            usageValuePerYear.disabled = true;
+                            usageValuePerYear.value = '';
+                            accumulationDepreciationValue.disabled = true;
+                            accumulationDepreciationValue.value = '';
+                            depreciationDate.disabled = true;
+                            depreciationDate.value = '';
+                        } else {
+                            method.disabled = false;
+                            depreciationAccount.disabled = false;
+                            usagePeriod.disabled = false;
+                            accumulationDepreciationAccount.disabled = false;
+                            usageValuePerYear.disabled = false;
+                            accumulationDepreciationValue.disabled = false;
+                            depreciationDate.disabled = false;
+                        }
+                    ">
                         <label for="checkbox2">Assets non Depresiasi</label>
                     </div>
                 <div class="mb-3">
@@ -114,7 +147,7 @@
                     <div class="col-md-6">
                         <label for="akun-dikreditkan" class="form-label fw-semibold">Periode Penggunaan</label>
                         <div class="mb-3">
-                            <input name="usage_period" type="text" class="form-control" id="Periode Penggunaan" placeholder="Periode Penggunaan">
+                            <input name="usage_period" type="number" class="form-control" id="Periode Penggunaan" placeholder="Periode Penggunaan">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -143,7 +176,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="detail-asset" class="form-label fw-semibold">Total Penyusutan</label>
-                            <input name="accumulation_depreciation_value" type="text" class="form-control" id="Penyusutan" placeholder="Total Penyusutan">
+                            <!-- <input name="accumulation_depreciation_value" type="text" class="form-control" id="Penyusutan" placeholder="Total Penyusutan"> -->
                         </div>
                     </div>
                 </div>
@@ -158,3 +191,4 @@
             </form>
         </div>
     </div>
+

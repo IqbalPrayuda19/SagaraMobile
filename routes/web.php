@@ -31,6 +31,10 @@ Route::post('/createLocations', [App\Http\Controllers\SagaraController::class, '
 //createCategory
 Route::get('/createCategories', [App\Http\Controllers\SagaraController::class, 'getCategories'])->middleware(['auth', 'verified'])->name('getCategories');
 Route::post('/createCategories', [App\Http\Controllers\SagaraController::class, 'createCategories'])->middleware(['auth', 'verified'])->name('createCategories');
+//history
+Route::get('/history', function () {
+    return view('dashboard.section.history.index');
+})->middleware(['auth', 'verified'])->name('history');
 // auth
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

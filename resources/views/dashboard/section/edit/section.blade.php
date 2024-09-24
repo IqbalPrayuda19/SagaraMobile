@@ -152,7 +152,33 @@
                     <input value="{{$assets->depreciation_date}}" name="depreciation_date" type="date" class="form-control" id="Tanggal Penyusutan">
                 </div>
                 <div class="d-grid gap-2 mt-3">
-                    <button type="submit" class="btn btn-primary">simpan</button>
+                    <button type="submit" class="btn btn-primary" onclick="return confirmSave(event)">simpan</button>
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                    <script>
+                        function confirmSave(event) {
+                            event.preventDefault();
+                            var form = event.target.form;
+                            Swal.fire({
+                                title: 'yakin?',
+                                text: "Jika Mengubah Data Aset, Data Aset Akan Berubah",
+                                icon: 'Peringatan',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Ya, Simpan!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    form.submit();
+                                    Swal.fire(
+                                        'Berhasil!',
+                                        'Data Asset Berhasil Diubah',
+                                        'success'
+                                    )
+                                }
+                            });
+                            return false;
+                        }
+                    </script>
                     <a href="/assets" class="btn btn-secondary">Batal</a>
                 </div>
             </form>

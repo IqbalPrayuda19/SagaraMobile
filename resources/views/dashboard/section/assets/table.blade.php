@@ -5,8 +5,9 @@
                             <h3 class="card-title">Assets</h3>
                         </div>
                         <div class="px-2">
-                            <a href="/create" class="px-2"><i data-feather="plus"></i></a>
+                            <a href="/create" class="px-2"><i data-feather="plus"> pp</i></a>
                             <i data-feather="folder-plus"></i>
+                            
                         </div>
                     </div>
                     <div class="table-responsive" style="overflow-x: auto; display: block;">
@@ -54,7 +55,28 @@
                                     <form action="{{route('destroy', $asset->uuid)}}" method="POST">
                                         @csrf
                                         <a href="{{route('getEdit', $asset->uuid)}}"><i class="badge-circle badge-circle-light-secondary text-success font-medium-1 mx-1" data-feather="edit"></i></a>
-                                        <button type="submit" onclick="return confirm('Hapus Data Aset?')"><i class="badge-circle badge-circle-light-secondary text-danger font-medium-1" data-feather="trash"></i></button>
+                                        <button type="submit" onclick="return confirmDelete(event, this.form)">
+                                        <i class="badge-circle badge-circle-light-secondary text-danger font-medium-1" data-feather="trash"></i>
+                                        </button>
+                                        <script>
+                                            function confirmDelete(event, form) {
+                                                event.preventDefault();
+                                                Swal.fire({
+                                                    title: 'Anda yakin?',
+                                                    text: 'Data aset akan dihapus!',
+                                                    icon: 'warning',
+                                                    showCancelButton: true,
+                                                    confirmButtonColor: '#3085d6',
+                                                    cancelButtonColor: '#d33',
+                                                    confirmButtonText: 'Ya, hapus!'
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        form.submit();
+                                                    }
+                                                });
+                                                return false;
+                                            }
+                                        </script>
                                     </form>
                                     </td>
                                 </tr>

@@ -42,10 +42,7 @@ class SagaraController extends Controller
      */
     public function postStore(Request $request)
     {
-        // dd($request);
-        // Validate the request data
         try {
-            //code...
             $request->validate([
                 'name' => 'required|string',
                 'location_id' => 'required|exists:locations,id',
@@ -54,7 +51,6 @@ class SagaraController extends Controller
                 'description' => 'required|string',
                 'accuisition_date' => 'nullable|date',
                 'accuisition_cost' => 'nullable|integer',
-                // 'method' => ['nullable', Rule::in(array_column(Method::cases(), 'value'))],
                 'usage_period' => 'nullable|integer',
                 'usage_value_per_year' => 'nullable|integer',
                 'depreciation_account' => 'nullable|string',
@@ -62,16 +58,19 @@ class SagaraController extends Controller
                 'accumulation_depreciation_value' => 'nullable|integer',
                 'depreciation_date' => 'nullable|date',
             ]);
-
-            // Create a new Sagara instance
+    
+            // Mengambil nilai checkbox (default 0 jika tidak dicentang)
+            $nonDepreciation = $request->input('non_depreciation', 0); 
             $uuid = Str::uuid();
             $location = $request->location_id;
             $category = $request->categories_id;
-            $year = \Carbon\Carbon::parse( $request->accuisition_date )->format('y');
+            $year = \Carbon\Carbon::parse($request->accuisition_date)->format('y');
             $custom = $location.'-'.$category.'-'.$year;
             $method = $request->method;
-            if ($request->non_depreciation == null){
-                if($method == 'STRAIGHT_LINE'){
+    
+            if ($nonDepreciation == 0) {
+                // Jika aset disusutkan (non_depreciation == 0)
+                if ($method == 'STRAIGHT_LINE') {
                     $assets = Assets::create([
                         'uuid' => $uuid,
                         'name' => $request->name,
@@ -92,8 +91,7 @@ class SagaraController extends Controller
                         'depreciation_date' => $request->depreciation_date,
                         'created_by_id' => Auth::user()->id,
                     ]);
-                }
-                elseif ($method == 'REDUCING_BALANCE'){
+                } elseif ($method == 'REDUCING_BALANCE') {
                     $assets = Assets::create([
                         'uuid' => $uuid,
                         'name' => $request->name,
@@ -115,49 +113,32 @@ class SagaraController extends Controller
                         'created_by_id' => Auth::user()->id,
                     ]);
                 }
+            } else {
+                // Jika aset tidak disusutkan (non_depreciation == 1)
+                $assets = Assets::create([
+                    'uuid' => $uuid,
+                    'name' => $request->name,
+                    'location_id' => $request->location_id,
+                    'categories_id' => $request->categories_id,
+                    'account_fixed_asset' => $request->account_fixed_asset,
+                    'description' => $request->description,
+                    'custom_number' => $custom,
+                    'non_depreciation' => 1, // Non-depreciable asset
+                    'accuisition_date' => $request->accuisition_date,
+                    'accuisition_cost' => $request->accuisition_cost,
+                    'created_by_id' => Auth::user()->id,
+                ]);
             }
-            else{
-                if($method == 'STRAIGHT_LINE'){
-                    $assets = Assets::create([
-                        'uuid' => $uuid,
-                        'name' => $request->name,
-                        'location_id' => $request->location_id,
-                        'categories_id' => $request->categories_id,
-                        'account_fixed_asset' => $request->account_fixed_asset,
-                        'description' => $request->description,
-                        'custom_number' => $custom,
-                        'non_depreciation' => 1,
-                        'accuisition_date' => $request->accuisition_date,
-                        'accuisition_cost' => $request->accuisition_cost,
-                        'created_by_id' => Auth::user()->id,
-                    ]);
-                }
-                elseif ($method == 'REDUCING_BALANCE'){
-                    $assets = Assets::create([
-                        'uuid' => $uuid,
-                        'name' => $request->name,
-                        'location_id' => $request->location_id,
-                        'categories_id' => $request->categories_id,
-                        'account_fixed_asset' => $request->account_fixed_asset,
-                        'description' => $request->description,
-                        'custom_number' => $custom,
-                        'non_depreciation' => 1,
-                        'accuisition_date' => $request->accuisition_date,
-                        'accuisition_cost' => $request->accuisition_cost,
-                        'created_by_id' => Auth::user()->id,
-                    ]);
-                }
-            }
-
+    
             // Redirect to the index page with a success message
             return redirect()->route('getIndex')->with('success', 'Item Added successfully.');
         } catch (\Throwable $th) {
-            //throw $th;
             return response()->json([
-                "error"=>$th->getMessage(),
+                "error" => $th->getMessage(),
             ]);
-        };
+        }
     }
+    
 
     /**
      * Display the specified resource.
