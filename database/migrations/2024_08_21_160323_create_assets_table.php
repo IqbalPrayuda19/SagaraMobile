@@ -13,30 +13,31 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //Table Asset
-        Schema::create('assets', function (Blueprint $table) {
-            $table->uuid();
-            $table->string('name');
-            $table->unsignedBigInteger('location_id');
-            $table->foreign('location_id')->references('id')->on('locations')->onDelete('restrict');
-            $table->unsignedBigInteger('categories_id');
-            $table->foreign('categories_id')->references('id')->on('categories')->onDelete('restrict');
-            $table->string('custom_number');
-            $table->string('account_fixed_asset');
-            $table->string('description');
-            $table->date('accuisition_date');
-            $table->integer('accuisition_cost');
-            $table->string('non_depreciation');
-            $table->string('method');
-            $table->integer('usage_period');
-            $table->integer('usage_value_per_year');
-            $table->string('depreciation_account');
-            $table->string('accumulation_depreciation_account');
-            $table->integer('accumulation_depreciation_value');
-            $table->date('depreciation_date');
-            $table->foreignId('created_by_id')->constrained('users')->onDelete('restrict');
-            $table->timestamps();
-        });
+      //Table Asset
+Schema::create('assets', function (Blueprint $table) {
+    $table->uuid();
+    $table->string('name');
+    $table->unsignedBigInteger('location_id');
+    $table->foreign('location_id')->references('id')->on('locations')->onDelete('restrict');
+    $table->unsignedBigInteger('categories_id');
+    $table->foreign('categories_id')->references('id')->on('categories')->onDelete('restrict');
+    $table->string('custom_number');
+    $table->string('account_fixed_asset');
+    $table->string('description');
+    $table->date('accuisition_date');
+    $table->unsignedBigInteger('accuisition_cost'); // Change this to unsignedBigInteger
+    $table->string('non_depreciation');
+    $table->string('method');
+    $table->unsignedInteger('usage_period'); // Keep usage_period as unsignedInteger
+    $table->unsignedBigInteger('usage_value_per_year'); // Change to unsignedBigInteger
+    $table->string('depreciation_account');
+    $table->string('accumulation_depreciation_account');
+    $table->unsignedBigInteger('accumulation_depreciation_value'); // Change to unsignedBigInteger
+    $table->date('depreciation_date');
+    $table->foreignId('created_by_id')->constrained('users')->onDelete('restrict');
+    $table->timestamps();
+});
+
     }
 
     /**

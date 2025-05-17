@@ -70,7 +70,7 @@
                         <div class="mb-3">
                             <label for="biaya-akuisisi" class="form-label fw-semibold">Biaya Akuisisi</label>
                             <div class="input-group">
-                                <input name="accuisition_cost" type="number" class="form-control"
+                                <input name="accuisition_cost" type="text" class="form-control"
                                     aria-label="Dollar amount (with dot and two decimal places)"
                                     id="biaya-akuisisi" placeholder="Biaya Akuisisi">
                             </div>
@@ -176,7 +176,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="detail-asset" class="form-label fw-semibold">Total Penyusutan</label>
-                            <!-- <input name="accumulation_depreciation_value" type="text" class="form-control" id="Penyusutan" placeholder="Total Penyusutan"> -->
+                            <input name="accumulation_depreciation_value" type="text" class="form-control" id="Penyusutan" placeholder="Total Penyusutan">
                         </div>
                     </div>
                 </div>
@@ -191,4 +191,27 @@
             </form>
         </div>
     </div>
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const inputIds = ['biaya-akuisisi', 'Nilai Penyusutan', 'Penyusutan'];
+
+    inputIds.forEach(function(id) {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('input', function () {
+                let value = this.value.replace(/[^\d,]/g, ''); // Hapus karakter selain angka dan koma
+                let [integerPart, decimalPart] = value.split(','); // Pisahkan bagian integer dan desimal
+                integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Format angka dengan titik setiap 3 digit
+                if (decimalPart) {
+                    decimalPart = decimalPart.slice(0, 2); // Ambil hanya dua digit desimal
+                }
+                // Gabungkan kembali integer dan desimal
+                this.value = decimalPart ? `${integerPart},${decimalPart}` : integerPart;
+            });
+        }
+    });
+});
+
+</script>
+
 

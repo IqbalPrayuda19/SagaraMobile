@@ -16,7 +16,7 @@
     </head>
     <body class="font-sans text-gray-900 antialiased" style="background-image: url('/Assets/background/login.jpg'); background-repeat: no-repeat; background-size: cover;">
         <div class="vh-100 d-flex flex-col justify-content-center align-items-center pt-6 bi bi-grid-fill">
-            <div class="h-50 w-25 mt-6 px-6 py-6 bg-white bg-opacity-50 backdrop-blur rounded">
+            <div class="w-100">
                 {{ $slot }}
             </div>
         </div>

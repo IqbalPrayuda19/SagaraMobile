@@ -43,6 +43,13 @@ class SagaraController extends Controller
     public function postStore(Request $request)
     {
         try {
+            // Menghapus titik pemisah ribuan
+            $request->merge([
+                'accuisition_cost' => (int) str_replace(['.', ','], '', $request->accuisition_cost), 
+                'usage_value_per_year' => (int) str_replace(['.', ','], '', $request->usage_value_per_year), 
+                'accumulation_depreciation_value' => (int) str_replace(['.', ','], '', $request->accumulation_depreciation_value)
+            ]);
+            
             $request->validate([
                 'name' => 'required|string',
                 'location_id' => 'required|exists:locations,id',
@@ -50,14 +57,16 @@ class SagaraController extends Controller
                 'account_fixed_asset' => 'nullable|string',
                 'description' => 'required|string',
                 'accuisition_date' => 'nullable|date',
-                'accuisition_cost' => 'nullable|integer',
+                'accuisition_cost' => 'nullable|integer',  // Validate as integer
                 'usage_period' => 'nullable|integer',
-                'usage_value_per_year' => 'nullable|integer',
+                'usage_value_per_year' => 'nullable|integer',  // Validate as integer
                 'depreciation_account' => 'nullable|string',
                 'accumulation_depreciation_account' => 'nullable|string',
-                'accumulation_depreciation_value' => 'nullable|integer',
+                'accumulation_depreciation_value' => 'nullable|integer',  // Validate as integer
                 'depreciation_date' => 'nullable|date',
             ]);
+            
+                
     
             // Mengambil nilai checkbox (default 0 jika tidak dicentang)
             $nonDepreciation = $request->input('non_depreciation', 0); 
