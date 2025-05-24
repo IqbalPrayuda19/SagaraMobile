@@ -186,15 +186,22 @@
                 </div>
                 <div class="d-grid gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">simpan</button>
-                    <a href="/assets" class="btn btn-secondary">Batal</a>
+                    <a href="/asset" class="btn btn-secondary">Batal</a>
                 </div>
             </form>
         </div>
     </div>
     <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Inisialisasi input fields
     const inputIds = ['biaya-akuisisi', 'Nilai Penyusutan', 'Penyusutan'];
-
+    const acquisitionCostInput = document.getElementById('biaya-akuisisi');
+    const methodSelect = document.getElementById('Metode');
+    const usagePeriodInput = document.getElementById('Periode Penggunaan');
+    const depreciationValueInput = document.getElementById('Nilai Penyusutan');
+    const accumulatedDepreciationInput = document.getElementById('Penyusutan');
+    const nonDepreciationCheckbox = document.getElementById('checkbox2');
+    
     inputIds.forEach(function(id) {
         const input = document.getElementById(id);
         if (input) {
@@ -210,6 +217,55 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     });
+    
+    function calculateStraightLineDepreciation(acquisitionCost, residualValue, usagePeriod) {
+        const depreciableAmount = acquisitionCost - residualValue;
+        return depreciableAmount / usagePeriod;
+    }
+    
+    function calculateReducingBalanceDepreciation(acquisitionCost, residualValue, usagePeriod) {
+        const rate = 1 - Math.pow((residualValue / acquisitionCost), (1 / usagePeriod));
+        return acquisitionCost * rate;
+    }
+    
+    function updateDepreciationValues() {
+        if (nonDepreciationCheckbox.checked) {
+            depreciationValueInput.value = '';
+            accumulatedDepreciationInput.value = '';
+            return;
+        }
+        
+        const acquisitionCostStr = acquisitionCostInput.value.replace(/\./g, '').replace(',', '.');
+        const acquisitionCost = parseFloat(acquisitionCostStr);
+        const usagePeriod = parseInt(usagePeriodInput.value);
+        
+        if (isNaN(acquisitionCost) || isNaN(usagePeriod) || usagePeriod <= 0) {
+            return;
+        }
+        
+        const residualValue = acquisitionCost * 0.1;
+        
+        let annualDepreciation = 0;
+        let accumulatedDepreciation = 0;
+        
+        if (methodSelect.value === 'STRAIGHT_LINE') {
+            annualDepreciation = calculateStraightLineDepreciation(acquisitionCost, residualValue, usagePeriod);
+            accumulatedDepreciation = annualDepreciation; 
+        } else if (methodSelect.value === 'REDUCING_BALANCE') {
+            annualDepreciation = calculateReducingBalanceDepreciation(acquisitionCost, residualValue, usagePeriod);
+            accumulatedDepreciation = annualDepreciation;
+        }
+        
+        depreciationValueInput.value = Math.round(annualDepreciation).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        accumulatedDepreciationInput.value = Math.round(accumulatedDepreciation).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+    
+    if (acquisitionCostInput && methodSelect && usagePeriodInput) {
+        acquisitionCostInput.addEventListener('change', updateDepreciationValues);
+        methodSelect.addEventListener('change', updateDepreciationValues);
+        usagePeriodInput.addEventListener('change', updateDepreciationValues);
+        nonDepreciationCheckbox.addEventListener('change', updateDepreciationValues);
+    }
 });
 
 </script>

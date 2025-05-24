@@ -15,7 +15,7 @@
 
                 <div class="d-grid gap-2 mt-4">
                     <button type="submit" class="btn btn-primary">simpan</button>
-                    <a href="/assets" class="btn btn-secondary">Batal</a>
+                    <a href="/settings" class="btn btn-secondary">Batal</a>
                 </div>
 
             </form>

@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Enums\Method;
 
 class Assets extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $primaryKey = 'uuid';
     protected $keyType = 'string';
@@ -35,11 +36,15 @@ class Assets extends Model
     ];
 
     public function categories () {
-        return $this->belongsTo(Categories::class);
+        return $this->belongsTo(Categories::class, 'categories_id');
     }
 
     public function locations () {
-        return $this->belongsTo(Locations::class);
+        return $this->belongsTo(Locations::class, 'location_id');
+    }
+
+    public function histories() {
+        return $this->hasMany(AssetHistory::class, 'asset_uuid', 'uuid');
     }
 
     protected function casts():array

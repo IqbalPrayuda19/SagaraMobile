@@ -12,7 +12,7 @@ Route::get('/dashboard', function () {
     return view('dashboard.section.dashboard.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 // assets
-Route::get('/assets',[App\Http\Controllers\SagaraController::class, 'getIndex'])->middleware(['auth', 'verified'])->name('getIndex');
+Route::get('/asset',[App\Http\Controllers\SagaraController::class, 'getIndex'])->middleware(['auth', 'verified'])->name('getIndex');
 // createAssets
 Route::get('/create', [App\Http\Controllers\SagaraController::class, 'create'])->middleware(['auth', 'verified'])->name('create');
 Route::post('/create', [App\Http\Controllers\SagaraController::class, 'postStore'])->middleware(['auth', 'verified'])->name('postStore');
@@ -32,9 +32,11 @@ Route::post('/createLocations', [App\Http\Controllers\SagaraController::class, '
 Route::get('/createCategories', [App\Http\Controllers\SagaraController::class, 'getCategories'])->middleware(['auth', 'verified'])->name('getCategories');
 Route::post('/createCategories', [App\Http\Controllers\SagaraController::class, 'createCategories'])->middleware(['auth', 'verified'])->name('createCategories');
 //history
-Route::get('/history', function () {
-    return view('dashboard.section.history.index');
-})->middleware(['auth', 'verified'])->name('history');
+Route::get('/history', [App\Http\Controllers\SagaraController::class, 'getHistory'])->middleware(['auth', 'verified'])->name('history');
+// restore asset
+Route::post('/restore/{uuid}', [App\Http\Controllers\SagaraController::class, 'restore'])->middleware(['auth', 'verified'])->name('restore');
+// delete history
+Route::delete('/history/{id}', [App\Http\Controllers\SagaraController::class, 'deleteHistory'])->middleware(['auth', 'verified'])->name('deleteHistory');
 // auth
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -15,7 +15,7 @@ return new class extends Migration
     {
       //Table Asset
 Schema::create('assets', function (Blueprint $table) {
-    $table->uuid();
+    $table->uuid('uuid')->primary();
     $table->string('name');
     $table->unsignedBigInteger('location_id');
     $table->foreign('location_id')->references('id')->on('locations')->onDelete('restrict');
@@ -25,14 +25,14 @@ Schema::create('assets', function (Blueprint $table) {
     $table->string('account_fixed_asset');
     $table->string('description');
     $table->date('accuisition_date');
-    $table->unsignedBigInteger('accuisition_cost'); // Change this to unsignedBigInteger
+    $table->unsignedBigInteger('accuisition_cost');
     $table->string('non_depreciation');
     $table->string('method');
-    $table->unsignedInteger('usage_period'); // Keep usage_period as unsignedInteger
-    $table->unsignedBigInteger('usage_value_per_year'); // Change to unsignedBigInteger
+    $table->unsignedInteger('usage_period');
+    $table->unsignedBigInteger('usage_value_per_year');
     $table->string('depreciation_account');
     $table->string('accumulation_depreciation_account');
-    $table->unsignedBigInteger('accumulation_depreciation_value'); // Change to unsignedBigInteger
+    $table->unsignedBigInteger('accumulation_depreciation_value');
     $table->date('depreciation_date');
     $table->foreignId('created_by_id')->constrained('users')->onDelete('restrict');
     $table->timestamps();
