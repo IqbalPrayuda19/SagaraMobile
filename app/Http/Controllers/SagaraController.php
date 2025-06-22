@@ -122,13 +122,16 @@ class SagaraController extends Controller
             $residualValue = $accuisitionCost * 0.1;
             $usagePeriod = $request->usage_period;
 
+            // Tambahkan variabel untuk persentase penyusutan (misalnya 5%)
+            $depreciationRate = 0.05; // 5% penyusutan
+
             if ($request->has('usage_value_per_year') && $request->usage_value_per_year > 0) {
                 $usageValuePerYear = $request->usage_value_per_year;
             } else {
                 if ($method == 'STRAIGHT_LINE') {
-                    $usageValuePerYear = $this->calculateStraightLineDepreciation($accuisitionCost, $residualValue, $usagePeriod);
+                    $usageValuePerYear = $this->calculateStraightLineDepreciationWithRate($accuisitionCost, $depreciationRate);
                 } else if ($method == 'REDUCING_BALANCE') {
-                    $usageValuePerYear = $this->calculateReducingBalanceDepreciation($accuisitionCost, $residualValue, $usagePeriod);
+                    $usageValuePerYear = $this->calculateReducingBalanceDepreciationWithRate($accuisitionCost, $depreciationRate);
                 } else {
                     $usageValuePerYear = 0;
                 }
@@ -137,11 +140,13 @@ class SagaraController extends Controller
             if ($request->has('accumulation_depreciation_value') && $request->accumulation_depreciation_value > 0) {
                 $accumulationDepreciationValue = $request->accumulation_depreciation_value;
             } else {
-
+                // Asumsikan tahun pertama (years = 1)
+                $years = 1;
+                
                 if ($method == 'STRAIGHT_LINE') {
-                    $accumulationDepreciationValue = $this->calculateAccumulatedStraightLineDepreciation($accuisitionCost, $residualValue, $usagePeriod, 1);
+                    $accumulationDepreciationValue = $this->calculateAccumulatedStraightLineDepreciationWithRate($accuisitionCost, $depreciationRate, $years);
                 } else if ($method == 'REDUCING_BALANCE') {
-                    $accumulationDepreciationValue = $this->calculateAccumulatedReducingBalanceDepreciation($accuisitionCost, $residualValue, $usagePeriod, 1);
+                    $accumulationDepreciationValue = $this->calculateAccumulatedReducingBalanceDepreciationWithRate($accuisitionCost, $depreciationRate, $years);
                 } else {
                     $accumulationDepreciationValue = 0;
                 }
@@ -167,6 +172,7 @@ class SagaraController extends Controller
                         'accumulation_depreciation_account' => $request->accumulation_depreciation_account,
                         'accumulation_depreciation_value' => $accumulationDepreciationValue,
                         'depreciation_date' => $request->depreciation_date,
+                        'depreciation_rate' => $depreciationRate,
                         'created_by_id' => Auth::user()->id,
                     ]);
                 } elseif ($method == 'REDUCING_BALANCE') {
@@ -188,6 +194,7 @@ class SagaraController extends Controller
                         'accumulation_depreciation_account' => $request->accumulation_depreciation_account,
                         'accumulation_depreciation_value' => $accumulationDepreciationValue,
                         'depreciation_date' => $request->depreciation_date,
+                        'depreciation_rate' => $depreciationRate,
                         'created_by_id' => Auth::user()->id,
                     ]);
                 }
@@ -203,6 +210,7 @@ class SagaraController extends Controller
                     'non_depreciation' => 1,
                     'accuisition_date' => $request->accuisition_date,
                     'accuisition_cost' => $accuisitionCost,
+                    'depreciation_rate' => $depreciationRate,
                     'created_by_id' => Auth::user()->id,
                 ]);
             }
@@ -298,13 +306,16 @@ class SagaraController extends Controller
             $residualValue = $accuisitionCost * 0.1;
             $usagePeriod = $request->usage_period;
 
+            // Tambahkan variabel untuk persentase penyusutan (misalnya 5%)
+            $depreciationRate = 0.05; // 5% penyusutan
+
             if ($request->has('usage_value_per_year') && $request->usage_value_per_year > 0) {
                 $usageValuePerYear = $request->usage_value_per_year;
             } else {
                 if ($method == 'STRAIGHT_LINE') {
-                    $usageValuePerYear = $this->calculateStraightLineDepreciation($accuisitionCost, $residualValue, $usagePeriod);
+                    $usageValuePerYear = $this->calculateStraightLineDepreciationWithRate($accuisitionCost, $depreciationRate);
                 } else if ($method == 'REDUCING_BALANCE') {
-                    $usageValuePerYear = $this->calculateReducingBalanceDepreciation($accuisitionCost, $residualValue, $usagePeriod);
+                    $usageValuePerYear = $this->calculateReducingBalanceDepreciationWithRate($accuisitionCost, $depreciationRate);
                 } else {
                     $usageValuePerYear = 0;
                 }
@@ -313,10 +324,13 @@ class SagaraController extends Controller
             if ($request->has('accumulation_depreciation_value') && $request->accumulation_depreciation_value > 0) {
                 $accumulationDepreciationValue = $request->accumulation_depreciation_value;
             } else {
+                // Asumsikan tahun pertama (years = 1)
+                $years = 1;
+                
                 if ($method == 'STRAIGHT_LINE') {
-                    $accumulationDepreciationValue = $this->calculateAccumulatedStraightLineDepreciation($accuisitionCost, $residualValue, $usagePeriod, 1);
+                    $accumulationDepreciationValue = $this->calculateAccumulatedStraightLineDepreciationWithRate($accuisitionCost, $depreciationRate, $years);
                 } else if ($method == 'REDUCING_BALANCE') {
-                    $accumulationDepreciationValue = $this->calculateAccumulatedReducingBalanceDepreciation($accuisitionCost, $residualValue, $usagePeriod, 1);
+                    $accumulationDepreciationValue = $this->calculateAccumulatedReducingBalanceDepreciationWithRate($accuisitionCost, $depreciationRate, $years);
                 } else {
                     $accumulationDepreciationValue = 0;
                 }
@@ -341,6 +355,7 @@ class SagaraController extends Controller
                         'accumulation_depreciation_account' => $request->accumulation_depreciation_account,
                         'accumulation_depreciation_value' => $accumulationDepreciationValue,
                         'depreciation_date' => $request->depreciation_date,
+                        'depreciation_rate' => $depreciationRate,
                         'created_by_id' => Auth::user()->id,
                     ]);
                 } elseif ($method == 'REDUCING_BALANCE') {
@@ -361,6 +376,7 @@ class SagaraController extends Controller
                         'accumulation_depreciation_account' => $request->accumulation_depreciation_account,
                         'accumulation_depreciation_value' => $accumulationDepreciationValue,
                         'depreciation_date' => $request->depreciation_date,
+                        'depreciation_rate' => $depreciationRate,
                         'created_by_id' => Auth::user()->id,
                     ]);
                 }
@@ -375,6 +391,7 @@ class SagaraController extends Controller
                     'non_depreciation' => 1,
                     'accuisition_date' => $request->accuisition_date,
                     'accuisition_cost' => $accuisitionCost,
+                    'depreciation_rate' => $depreciationRate,
                     'created_by_id' => Auth::user()->id,
                 ]);
             }
@@ -681,5 +698,123 @@ class SagaraController extends Controller
         } catch (\Throwable $th) {
             return redirect()->route('history')->with('error', 'Gagal menghapus riwayat: ' . $th->getMessage());
         }
+    }
+
+    /**
+     * Menghitung penyusutan dengan metode Straight Line dengan persentase tetap
+     *
+     * @param float $acquisitionCost Harga perolehan aset
+     * @param float $depreciationRate Persentase penyusutan (misal: 0.05 untuk 5%)
+     * @param int $currentYear Tahun ke berapa (1, 2, 3, dst)
+     * @return float Nilai penyusutan untuk tahun tersebut
+     */
+    private function calculateStraightLineDepreciationWithRate($acquisitionCost, $depreciationRate, $currentYear = 1)
+    {
+        // Rumus: Harga Perolehan * Persentase Penyusutan
+        $annualDepreciation = $acquisitionCost * $depreciationRate;
+        
+        return $annualDepreciation;
+    }
+
+    /**
+     * Menghitung nilai buku dengan metode Straight Line dengan persentase tetap
+     *
+     * @param float $acquisitionCost Harga perolehan aset
+     * @param float $depreciationRate Persentase penyusutan (misal: 0.05 untuk 5%)
+     * @param int $years Jumlah tahun yang telah berlalu
+     * @return float Nilai buku setelah penyusutan
+     */
+    private function calculateStraightLineBookValueWithRate($acquisitionCost, $depreciationRate, $years)
+    {
+        // Rumus: Harga Perolehan - (Harga Perolehan * Persentase Penyusutan * Tahun)
+        $totalDepreciation = $acquisitionCost * $depreciationRate * $years;
+        $bookValue = $acquisitionCost - $totalDepreciation;
+        
+        // Pastikan nilai buku tidak negatif
+        return max(0, $bookValue);
+    }
+
+    /**
+     * Menghitung akumulasi penyusutan dengan metode Straight Line dengan persentase tetap
+     *
+     * @param float $acquisitionCost Harga perolehan aset
+     * @param float $depreciationRate Persentase penyusutan (misal: 0.05 untuk 5%)
+     * @param int $years Jumlah tahun yang telah berlalu
+     * @return float Nilai akumulasi penyusutan
+     */
+    private function calculateAccumulatedStraightLineDepreciationWithRate($acquisitionCost, $depreciationRate, $years)
+    {
+        // Rumus: Harga Perolehan * Persentase Penyusutan * Tahun
+        $accumulatedDepreciation = $acquisitionCost * $depreciationRate * $years;
+        
+        // Pastikan akumulasi penyusutan tidak melebihi harga perolehan
+        return min($acquisitionCost, $accumulatedDepreciation);
+    }
+
+    /**
+     * Menghitung penyusutan dengan metode Reducing Balance dengan persentase tetap
+     *
+     * @param float $acquisitionCost Harga perolehan aset
+     * @param float $depreciationRate Persentase penyusutan (misal: 0.05 untuk 5%)
+     * @param int $currentYear Tahun ke berapa (1, 2, 3, dst)
+     * @return float Nilai penyusutan untuk tahun tersebut
+     */
+    private function calculateReducingBalanceDepreciationWithRate($acquisitionCost, $depreciationRate, $currentYear = 1)
+    {
+        // Menghitung nilai buku di awal tahun
+        $bookValue = $acquisitionCost;
+        
+        for ($i = 1; $i < $currentYear; $i++) {
+            $depreciation = $bookValue * $depreciationRate;
+            $bookValue -= $depreciation;
+        }
+        
+        // Hitung penyusutan untuk tahun yang diminta
+        $depreciation = $bookValue * $depreciationRate;
+        
+        return $depreciation;
+    }
+
+    /**
+     * Menghitung nilai buku dengan metode Reducing Balance dengan persentase tetap
+     *
+     * @param float $acquisitionCost Harga perolehan aset
+     * @param float $depreciationRate Persentase penyusutan (misal: 0.05 untuk 5%)
+     * @param int $years Jumlah tahun yang telah berlalu
+     * @return float Nilai buku setelah penyusutan
+     */
+    private function calculateReducingBalanceBookValueWithRate($acquisitionCost, $depreciationRate, $years)
+    {
+        $bookValue = $acquisitionCost;
+        
+        for ($i = 1; $i <= $years; $i++) {
+            $depreciation = $bookValue * $depreciationRate;
+            $bookValue -= $depreciation;
+        }
+        
+        // Pastikan nilai buku tidak negatif
+        return max(0, $bookValue);
+    }
+
+    /**
+     * Menghitung akumulasi penyusutan dengan metode Reducing Balance dengan persentase tetap
+     *
+     * @param float $acquisitionCost Harga perolehan aset
+     * @param float $depreciationRate Persentase penyusutan (misal: 0.05 untuk 5%)
+     * @param int $years Jumlah tahun yang telah berlalu
+     * @return float Nilai akumulasi penyusutan
+     */
+    private function calculateAccumulatedReducingBalanceDepreciationWithRate($acquisitionCost, $depreciationRate, $years)
+    {
+        $bookValue = $acquisitionCost;
+        $accumulatedDepreciation = 0;
+        
+        for ($i = 1; $i <= $years; $i++) {
+            $depreciation = $bookValue * $depreciationRate;
+            $bookValue -= $depreciation;
+            $accumulatedDepreciation += $depreciation;
+        }
+        
+        return $accumulatedDepreciation;
     }
 }
