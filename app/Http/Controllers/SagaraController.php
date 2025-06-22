@@ -159,8 +159,8 @@ class SagaraController extends Controller
             if ($request->has('accumulation_depreciation_value') && $request->accumulation_depreciation_value > 0) {
                 $accumulationDepreciationValue = $request->accumulation_depreciation_value;
             } else {
-                // Asumsikan tahun pertama (years = 1)
-                $years = 1;
+                // Gunakan periode penggunaan sebagai jumlah tahun
+                $years = $usagePeriod;
                 
                 if ($method == 'STRAIGHT_LINE') {
                     $accumulationDepreciationValue = $this->calculateAccumulatedStraightLineDepreciationWithRate($accuisitionCost, $depreciationRate, $years);
@@ -362,8 +362,8 @@ class SagaraController extends Controller
             if ($request->has('accumulation_depreciation_value') && $request->accumulation_depreciation_value > 0) {
                 $accumulationDepreciationValue = $request->accumulation_depreciation_value;
             } else {
-                // Asumsikan tahun pertama (years = 1)
-                $years = 1;
+                // Gunakan periode penggunaan sebagai jumlah tahun
+                $years = $usagePeriod;
                 
                 if ($method == 'STRAIGHT_LINE') {
                     $accumulationDepreciationValue = $this->calculateAccumulatedStraightLineDepreciationWithRate($accuisitionCost, $depreciationRate, $years);

@@ -265,22 +265,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const acquisitionCostStr = acquisitionCostInput.value.replace(/\./g, '').replace(',', '.');
         const acquisitionCost = parseFloat(acquisitionCostStr);
+        const usagePeriod = parseInt(usagePeriodInput.value) || 1; // Gunakan 1 jika tidak ada nilai
 
         if (isNaN(acquisitionCost)) {
             return;
         }
 
         let annualDepreciation = 0;
+        let totalDepreciation = 0;
 
         if (methodSelect.value === 'STRAIGHT_LINE') {
             annualDepreciation = calculateStraightLineDepreciation(acquisitionCost);
+            // Total penyusutan = penyusutan tahunan × periode penggunaan
+            totalDepreciation = annualDepreciation * usagePeriod;
         } else if (methodSelect.value === 'REDUCING_BALANCE') {
             annualDepreciation = calculateReducingBalanceDepreciation(acquisitionCost);
+            
+            // Hitung total penyusutan dengan metode saldo menurun
+            let remainingValue = acquisitionCost;
+            totalDepreciation = 0;
+            
+            for (let i = 0; i < usagePeriod; i++) {
+                const yearDepreciation = remainingValue * 0.10;
+                totalDepreciation += yearDepreciation;
+                remainingValue -= yearDepreciation;
+            }
         }
 
         // Format nilai penyusutan
         depreciationValueInput.value = Math.round(annualDepreciation).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        accumulatedDepreciationInput.value = depreciationValueInput.value; // Untuk tahun pertama, nilai akumulasi sama dengan nilai penyusutan
+        accumulatedDepreciationInput.value = Math.round(totalDepreciation).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     }
 
     // Tambahkan event listeners
