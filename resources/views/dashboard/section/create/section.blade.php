@@ -2,7 +2,7 @@
     <div class="card mx-auto" style="max-width: 75vw;">
         <div class="card-header d-flex justify-content-between align-items-center px-4 py-2">
         </div>
-        <a href="/assets" class="position-absolute top-0 start-0 mt-3 ms-3">
+        <a href="/asset" class="position-absolute top-0 start-0 mt-3 ms-3">
             <i data-feather="arrow-left" class="me-2" style="font-size: 2rem;"></i>
         </a>
         <div class="card-body px-4 py-2">
@@ -12,12 +12,12 @@
                 <div class="row g-3 mt-2">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="detail-asset" class="form-label fw-semibold">Nama aset</label>
-                            <input name="name" type="text" class="form-control" id="nama aset" placeholder="Nama Aset">
+                            <label for="detail-asset" class="form-label fw-semibold">Nama aset<span class="text-danger mx-3">*</span></label>
+                            <input name="name" type="text" class="form-control" id="nama aset" placeholder="Nama Aset" required>
                         </div>
                         <div class="mb-3">
-                            <label for="nomor-asset" class="form-label fw-semibold">Lokasi</label>
-                            <select name="location_id" class="form-select" id="akun-asset">
+                            <label for="nomor-asset" class="form-label fw-semibold" required>Lokasi<span class="text-danger mx-3">*</span></label>
+                            <select name="location_id" class="form-select" id="akun-asset" required>
                                 <option value="" selected disabled> Pilih </option>
                                 @foreach ($locations as $location )
                                     <option value="{{$location->id}}">{{$location->name}}</option>
@@ -27,8 +27,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                        <label for="nomor-asset" class="form-label fw-semibold">Akun Aset Tetap</label>
-                            <select name="account_fixed_asset" class="form-select" id="akun-asset-tetap">
+                        <label for="nomor-asset" class="form-label fw-semibold">Akun Aset Tetap<span class="text-danger mx-3">*</span></label>
+                            <select name="account_fixed_asset" class="form-select" id="akun-asset-tetap" required>
                                 <option value="" selected disabled> Pilih </option>
                                 <option value="Aset Tetap - Tanah">Aset Tetap - Tanah</option>
                                 <option value="Aset Tetap - Bangunan">Aset Tetap - Bangunan</option>
@@ -41,15 +41,15 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="nomor-asset" class="form-label fw-semibold">Deskripsi</label>
-                            <input name="description" type="text" class="form-control" id="Deskripsi" placeholder="Deskripsi">
+                            <label for="nomor-asset" class="form-label fw-semibold">Deskripsi<span class="text-danger mx-3">*</span></label>
+                            <input name="description" type="text" class="form-control" id="Deskripsi" placeholder="Deskripsi" required>
                         </div>
                     </div>
                 </div>
                 <div class="row g-3 mt-2">
                     <div class="col-md-6">
-                        <label for="akun-asset" class="form-label fw-semibold">Kategori</label>
-                            <select name="categories_id" class="form-select" id="akun-asset">
+                        <label for="akun-asset" class="form-label fw-semibold">Kategori<span class="text-danger mx-3">*</span></label>
+                            <select name="categories_id" class="form-select" id="akun-asset" required>
                                 <option value="" selected disabled> Pilih </option>
                                @foreach ($categories as $category )
                                     <option value="{{$category->id}}">{{$category->name}}</option>
@@ -59,8 +59,8 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <div class="mb-3">
-                            <label for="tanggal-akuisisi" class="form-label fw-semibold">Tanggal Akuisisi</label>
-                            <input name="accuisition_date" type="date" class="form-control" id="tanggal-akuisisi">
+                            <label for="tanggal-akuisisi" class="form-label fw-semibold">Tanggal Akuisisi<span class="text-danger mx-3">*</span></label>
+                            <input name="accuisition_date" type="date" class="form-control" id="tanggal-akuisisi" required>
                             </div>
                         </div>
                     </div>
@@ -68,11 +68,11 @@
                 <div class="row g-3 mt-2">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="biaya-akuisisi" class="form-label fw-semibold">Biaya Akuisisi</label>
+                            <label for="biaya-akuisisi" class="form-label fw-semibold">Biaya Akuisisi<span class="text-danger mx-3">*</span></label>
                             <div class="input-group">
                                 <input name="accuisition_cost" type="text" class="form-control"
                                     aria-label="Dollar amount (with dot and two decimal places)"
-                                    id="biaya-akuisisi" placeholder="Biaya Akuisisi">
+                                    id="biaya-akuisisi" placeholder="Biaya Akuisisi" required>
                             </div>
                         </div>
                     </div>
@@ -119,8 +119,8 @@
                 <div class="row mt-2">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="akun-dikreditkan" class="form-label fw-semibold">Metode</label>
-                            <select name="method" class="form-select" id="Metode">
+                            <label for="akun-dikreditkan" class="form-label fw-semibold">Metode<span class="text-danger mx-3">*</span></label>
+                            <select name="method" class="form-select" id="Metode" required>
                                 <option value="" selected disabled> Pilih </option>
                                 @foreach (\App\Enums\Method::cases() as $method)
                                     <option value="{{ $method->name }}">{{ $method->value }}</option>
@@ -130,8 +130,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="akun-dikreditkan" class="form-label fw-semibold">Depresiasi Akun Penyusutan</label>
-                            <select name="depreciation_account" class="form-select" id="Akun penyusutan">
+                            <label for="akun-dikreditkan" class="form-label fw-semibold">Depresiasi Akun Penyusutan<span class="text-danger mx-3">*</span></label>
+                            <select name="depreciation_account" class="form-select" id="Akun penyusutan" required>
                                 <option value="" selected disabled> Pilih </option>
                                 <option value="Penyusutan - Bangunan">Penyusutan - Bangunan</option>
                                 <option value="Penyusutan - Building Improvements">Penyusutan - Building Improvementsi</option>
@@ -145,15 +145,15 @@
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-6">
-                        <label for="akun-dikreditkan" class="form-label fw-semibold">Periode Penggunaan</label>
+                        <label for="akun-dikreditkan" class="form-label fw-semibold">Periode Penggunaan<span class="text-danger mx-3">*</span></label>
                         <div class="mb-3">
-                            <input name="usage_period" type="number" class="form-control" id="Periode Penggunaan" placeholder="Periode Penggunaan">
+                            <input name="usage_period" type="number" class="form-control" id="Periode Penggunaan" placeholder="Periode Penggunaan" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="akun-dikreditkan" class="form-label fw-semibold">Akumulasi  Depresiasi Akun Penyusutan</label>
-                            <select name="accumulation_depreciation_account" class="form-select" id="Akumulasi Akun Penyusutan">
+                            <label for="akun-dikreditkan" class="form-label fw-semibold">Akumulasi  Depresiasi Akun Penyusutan<span class="text-danger mx-3">*</span></label>
+                            <select name="accumulation_depreciation_account" class="form-select" required id="Akumulasi Akun Penyusutan">
                                 <option value="" selected disabled> Pilih </option>
                                 <option value="Akumulasi Penyusutan - Bangunan">Akumulasi Penyusutan - Bangunan</option>
                                 <option value="Akumulasi Penyusutan - Building Improvements">Akumulasi Penyusutan - Building Improvements</option>
@@ -168,21 +168,21 @@
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-6">
-                        <label for="akun-dikreditkan" class="form-label fw-semibold">Nilai Penyusutan Pertahun</label>
+                        <label for="akun-dikreditkan" class="form-label fw-semibold">Nilai Penyusutan Pertahun<span class="text-danger mx-3">*</span></label>
                         <div class="mb-3">
-                            <input name="usage_value_per_year" type="text" class="form-control" id="Nilai Penyusutan" placeholder="Nilai Penyusutan">
+                            <input name="usage_value_per_year" type="text" class="form-control" id="Nilai Penyusutan" placeholder="Nilai Penyusutan" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="detail-asset" class="form-label fw-semibold">Total Penyusutan</label>
-                            <input name="accumulation_depreciation_value" type="text" class="form-control" id="Penyusutan" placeholder="Total Penyusutan">
+                            <label for="detail-asset" class="form-label fw-semibold">Total Penyusutan<span class="text-danger mx-3">*</span></label>
+                            <input name="accumulation_depreciation_value" type="text" class="form-control" id="Penyusutan" placeholder="Total Penyusutan" required>
                         </div>
                     </div>
                 </div>
                 <div class="mb-4 mt-2">
-                    <label for="tanggal-akuisisi" class="form-label fw-semibold">Tanggal Penyusutan</label>
-                    <input name="depreciation_date" type="date" class="form-control" id="Tanggal Penyusutan">
+                    <label for="tanggal-akuisisi" class="form-label fw-semibold">Tanggal Penyusutan<span class="text-danger mx-3">*</span></label>
+                    <input name="depreciation_date" type="date" class="form-control" id="Tanggal Penyusutan" required>
                 </div>
                 <div class="d-grid gap-2 mt-3">
                     <button type="submit" class="btn btn-primary">simpan</button>
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const depreciationValueInput = document.getElementById('Nilai Penyusutan');
     const accumulatedDepreciationInput = document.getElementById('Penyusutan');
     const nonDepreciationCheckbox = document.getElementById('checkbox2');
-    
+
     inputIds.forEach(function(id) {
         const input = document.getElementById(id);
         if (input) {
@@ -217,49 +217,49 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     });
-    
+
     function calculateStraightLineDepreciation(acquisitionCost, residualValue, usagePeriod) {
         const depreciableAmount = acquisitionCost - residualValue;
         return depreciableAmount / usagePeriod;
     }
-    
+
     function calculateReducingBalanceDepreciation(acquisitionCost, residualValue, usagePeriod) {
         const rate = 1 - Math.pow((residualValue / acquisitionCost), (1 / usagePeriod));
         return acquisitionCost * rate;
     }
-    
+
     function updateDepreciationValues() {
         if (nonDepreciationCheckbox.checked) {
             depreciationValueInput.value = '';
             accumulatedDepreciationInput.value = '';
             return;
         }
-        
+
         const acquisitionCostStr = acquisitionCostInput.value.replace(/\./g, '').replace(',', '.');
         const acquisitionCost = parseFloat(acquisitionCostStr);
         const usagePeriod = parseInt(usagePeriodInput.value);
-        
+
         if (isNaN(acquisitionCost) || isNaN(usagePeriod) || usagePeriod <= 0) {
             return;
         }
-        
+
         const residualValue = acquisitionCost * 0.1;
-        
+
         let annualDepreciation = 0;
         let accumulatedDepreciation = 0;
-        
+
         if (methodSelect.value === 'STRAIGHT_LINE') {
             annualDepreciation = calculateStraightLineDepreciation(acquisitionCost, residualValue, usagePeriod);
-            accumulatedDepreciation = annualDepreciation; 
+            accumulatedDepreciation = annualDepreciation;
         } else if (methodSelect.value === 'REDUCING_BALANCE') {
             annualDepreciation = calculateReducingBalanceDepreciation(acquisitionCost, residualValue, usagePeriod);
             accumulatedDepreciation = annualDepreciation;
         }
-        
+
         depreciationValueInput.value = Math.round(annualDepreciation).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         accumulatedDepreciationInput.value = Math.round(accumulatedDepreciation).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     }
-    
+
     if (acquisitionCostInput && methodSelect && usagePeriodInput) {
         acquisitionCostInput.addEventListener('change', updateDepreciationValues);
         methodSelect.addEventListener('change', updateDepreciationValues);

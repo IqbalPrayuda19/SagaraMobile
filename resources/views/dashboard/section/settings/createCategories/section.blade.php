@@ -9,7 +9,7 @@
                 <h4 class="card-title mt-2 text-center">Penambahan Category Baru</h4>
 
                 <div class="mb-3">
-                    <label for="detail-asset" class="form-label fw-semibold">Jenis Category</label>
+                    <label for="detail-asset" class="form-label fw-semibold">Jenis Category<span class="text-danger mx-3">*</span></label>
                     <input name="name" type="text" class="form-control" id="nama aset" placeholder="Nama Aset">
                 </div>
 

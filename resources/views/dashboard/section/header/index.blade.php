@@ -2,5 +2,5 @@
         <div class="d-flex justify-content-end ms-3 pt-3 fw-md" style="width: 78vw;">
                 <p class="">{{ auth()->user()->name }} </p>
                 <i data-feather="user" class="ms-3 "></i>
-        </div>        
+        </div>
 </div>

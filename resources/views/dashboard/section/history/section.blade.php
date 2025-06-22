@@ -10,9 +10,9 @@
                 <thead class="thead-dark">
                     <tr>
                         <th class="text-bold-500 text-center">Tanggal</th>
-                        <th class="text-bold-500 text-center">Aksi</th>
+                        <th class="text-bold-500 text-center">Status</th>
                         <th class="text-bold-500 text-center">No.Transaksi</th>
-                        <th class="text-bold-500 text-center">Akun</th>
+                        <th class="text-bold-500 text-center">Jenis</th>
                         <th class="text-bold-500 text-center">Debit</th>
                         <th class="text-bold-500 text-center">Kredit</th>
                         <th class="text-bold-500 text-center">Aksi</th>

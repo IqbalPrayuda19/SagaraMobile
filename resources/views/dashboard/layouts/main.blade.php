@@ -8,12 +8,13 @@
     <link rel="stylesheet" crossorigin href="/css/app.css">
     <link rel="stylesheet" crossorigin href="/css/app-dark.css">
     <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
-<body>
+<body style="background-color: #6d7c91;">
     <script src="SagaraMobile/resources/initTheme.js"></script>
         <div id="app" class="d-flex " style="width: 100vw; min-height: 100vh; padding-left: 299px;">
-                @include('dashboard.section.sidebar.index')   
+                @include('dashboard.section.sidebar.index')
 
             <div style="width: 100%; max-width=100vw;">
                 @include('dashboard.section.header.index')

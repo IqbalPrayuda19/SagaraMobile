@@ -1,11 +1,10 @@
 <x-guest-layout>
-    <section class="" style="font-family: 'Poppins', sans-serif;">
-        <div class="container py-5 h-100">
+    <section class="h-100" style="font-family: 'Poppins', sans-serif;">
+        <div class="container h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-12 col-md-8 col-lg-6 col-xl-5">
                     <div class="card shadow-2-strong" style="border-radius: 1rem;">
                         <div class="card-body p-5 text-center">
-
                             <!-- Logo -->
                             <div class="mb-4">
                                 <img src="/Assets/logo/Logo.png" class="img-fluid " style="max-width: 100px; border-radius: 10px; height: 60px; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));" alt="Logo">
@@ -38,22 +37,9 @@
                                 </div>
 
                                 <!-- Submit -->
-                                <x-primary-button class="btn btn-primary btn-lg btn-block w-100 mb-3">
+                                <x-primary-button class="btn btn-primary text-white btn-lg btn-block w-100 mb-3">
                                     {{ __('Login') }}
                                 </x-primary-button>
-
-                                <!-- Links -->
-                                @if (Route::has('password.request'))
-                                    <div class="mb-2">
-                                        <a class="text-decoration-none text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
-                                            {{ __('Lupa Password?') }}
-                                        </a>
-                                    </div>
-                                @endif
-
-                                <div class="mb-3">
-                                    <a href="/register" class="text-decoration-none">Belum punya akun? Daftar</a>
-                                </div>
                             </form>
 
                         </div>

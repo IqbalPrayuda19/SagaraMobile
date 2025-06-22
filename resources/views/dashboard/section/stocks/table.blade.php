@@ -4,9 +4,18 @@
             <div>
                 <h3 class="card-title">Assets</h3>
             </div>
+            <form action="{{ route('getIndex') }}" method="GET" class="mx-2 w-50">
+                <div class="input-group border border-1 border-secondary rounded">
+                    <input type="text" name="search" class="form-control" placeholder="Cari aset..." value="{{ request('search') }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary border-0" type="submit">
+                            <i data-feather="search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
             <div class="px-2">
-                <a href="/create" class="px-2"><i data-feather="plus"> pp</i></a>
-                <i data-feather="folder-plus"></i>
+                <a href="/create" class="px-2"><i data-feather="plus"></i></a>
             </div>
         </div>
         <div class="table-responsive" style="overflow-x: auto; display: block;">
@@ -35,13 +44,13 @@
                         <th class="text-bold-500 text-center">-</th>
                         <th class="text-bold-500 text-center">Nilai Penyusutan Pertahun</th>
                         <th class="text-bold-500 text-center">-</th>
-                        <th class="text-bold-500 text-center">depresiasi akun penyusutan</th>
+                        <th class="text-bold-500 text-center">Depresiasi Akun Penyusutan</th>
                         <th class="text-bold-500 text-center">-</th>
-                        <th class="text-bold-500 text-center">akumulasi depresiasi akun penyusutan</th>
+                        <th class="text-bold-500 text-center">Akumulasi Depresiasi Akun Penyusutan</th>
                         <th class="text-bold-500 text-center">-</th>
-                        <th class="text-bold-500 text-center">total penyusutan</th>
+                        <th class="text-bold-500 text-center">Total Penyusutan</th>
                         <th class="text-bold-500 text-center">-</th>
-                        <th class="text-bold-500 text-center">tanggal penyusutan</th>
+                        <th class="text-bold-500 text-center">Tanggal Penyusutan</th>
                         <th class="text-bold-500 text-center">-</th>
                         <th class="text-bold-500 text-center">Aksi</th>
                     </tr>
@@ -52,9 +61,9 @@
                     <tr>
                         <td class="text-bold-500 text-center">{{ $asset->name}}</td>
                         <td class="text-bold-500 text-center">-</td>
-                        <td class="text-bold-500 text-center">{{ $asset->location_id}}</td>
+                        <td class="text-bold-500 text-center">{{ $asset->locations->name}}</td>
                         <td class="text-bold-500 text-center">-</td>
-                        <td class="text-bold-500 text-center">{{ $asset->categories_id}}</td>
+                        <td class="text-bold-500 text-center">{{ $asset->categories->name}}</td>
                         <td class="text-bold-500 text-center">-</td>
                         <td class="text-bold-500 text-center">{{ $asset->location_id}} - {{ $asset->categories_id}} - {{\Carbon\Carbon::parse( $asset->accuisition_date )->format('y')}}</td>
                         <td class="text-bold-500 text-center">-</td>
@@ -83,9 +92,9 @@
                         <td class="text-bold-500 text-center">
                         <form action="{{route('destroy', $asset->uuid)}}" method="POST">
                             @csrf
-                            <a href="{{route('getEdit', $asset->uuid)}}"><i class="badge-circle badge-circle-light-secondary text-success font-medium-1 mx-1" data-feather="edit"></i></a>
-                            <button type="submit" onclick="return confirmDelete(event, this.form)">
-                            <i class="badge-circle badge-circle-light-secondary text-danger font-medium-1" data-feather="trash"></i>
+                            <a href="{{route('getEdit', $asset->uuid)}}"><i class="badge-circle badge-circle-light-secondary text-success font-medium-1 mx-1" style="width:18px; height:18px;" data-feather="edit"></i></a>
+                            <button type="submit" onclick="return confirmDelete(event, this.form)" class="border-0 bg-white">
+                            <i class=" border-0 badge-circle badge-circle-light-secondary text-danger font-medium-1" style="width:18px; height:18px;" data-feather="trash"></i>
                             </button>
                             <script>
                                 function confirmDelete(event, form) {

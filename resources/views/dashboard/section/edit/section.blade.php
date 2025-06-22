@@ -2,7 +2,7 @@
     <div class="card mx-auto" style="max-width: 75vw;">
         <div class="card-header d-flex justify-content-between align-items-center px-4 py-2">
         </div>
-        <a href="/assets" class="position-absolute top-0 start-0 mt-3 ms-3">
+        <a href="/asset" class="position-absolute top-0 start-0 mt-3 ms-3">
             <i data-feather="arrow-left" class="me-2" style="font-size: 2rem;"></i>
         </a>
         <div class="card-body px-4 py-2">

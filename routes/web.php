@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [AuthenticatedSessionController::class, 'create']);
 Route::get('/register', [AuthenticatedSessionController::class, 'create']);
 // dashboard
-Route::get('/dashboard', function () {
-    return view('dashboard.section.dashboard.index');
-})->middleware(['auth', 'verified'])->name('dashboard');
+use App\Http\Controllers\DashboardController;
+
+Route::get('/dashboard', [App\Http\Controllers\SagaraController::class, 'getDashboardContent'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 // assets
 Route::get('/asset',[App\Http\Controllers\SagaraController::class, 'getIndex'])->middleware(['auth', 'verified'])->name('getIndex');
 // createAssets

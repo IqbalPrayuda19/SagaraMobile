@@ -9,7 +9,7 @@
                 <h4 class="card-title mt-2 text-center">Penambahan Lokasi Baru</h4>
 
                 <div class="mb-3">
-                    <label for="detail-asset" class="form-label fw-semibold">Nama Toko</label>
+                    <label for="detail-asset" class="form-label fw-semibold">Nama Toko<span class="text-danger mx-3">*</span></label>
                     <input name="name" type="text" class="form-control" id="nama aset" placeholder="Nama Aset">
                 </div>
 

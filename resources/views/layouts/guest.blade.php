@@ -14,7 +14,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased" style="background-image: url('/Assets/background/login.jpg'); background-repeat: no-repeat; background-size: cover;">
+    <body class="font-sans text-gray-900 antialiased" style="background-color: #6d7c91;">
         <div class="vh-100 d-flex flex-col justify-content-center align-items-center pt-6 bi bi-grid-fill">
             <div class="w-100">
                 {{ $slot }}

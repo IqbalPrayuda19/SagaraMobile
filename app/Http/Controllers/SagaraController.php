@@ -17,13 +17,44 @@ class SagaraController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function getIndex()
+    public function getIndex(Request $request)
     {
         //
-        $assets = Assets::all();
+        // $assets = Assets::all();
         // dd ($assets);
-        return view ('dashboard.section.assets.index', compact('assets'));
+        $search = $request->input('search');
+
+        $assets = \App\Models\Assets::with(['categories', 'locations'])
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('custom_number', 'like', "%{$search}%")
+                      ->orWhere('account_fixed_asset', 'like', "%{$search}%")
+                      ->orWhere('description', 'like', "%{$search}%")
+                      ->orWhere('method', 'like', "%{$search}%")
+                      ->orWhere('depreciation_account', 'like', "%{$search}%")
+                      ->orWhere('accumulation_depreciation_account', 'like', "%{$search}%")
+                      // Relational search
+                      ->orWhereHas('categories', function ($cat) use ($search) {
+                          $cat->where('name', 'like', "%{$search}%");
+                      })
+                      ->orWhereHas('locations', function ($loc) use ($search) {
+                          $loc->where('name', 'like', "%{$search}%");
+                      });
+                });
+            })
+            ->get();
+        return view ('dashboard.section.stocks.index', compact('assets','search'));
     }
+
+    public function getDashboardContent()
+    {
+        $assets = Assets::select('name', 'accuisition_cost')->take(5)->get();
+        $history =AssetHistory::pluck('transaction_number');
+
+        return view('dashboard.section.dashboard.index', compact('assets','history'));
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -46,11 +77,11 @@ class SagaraController extends Controller
         try {
             // Menghapus titik pemisah ribuan
             $request->merge([
-                'accuisition_cost' => (int) str_replace(['.', ','], '', $request->accuisition_cost), 
-                'usage_value_per_year' => (int) str_replace(['.', ','], '', $request->usage_value_per_year), 
+                'accuisition_cost' => (int) str_replace(['.', ','], '', $request->accuisition_cost),
+                'usage_value_per_year' => (int) str_replace(['.', ','], '', $request->usage_value_per_year),
                 'accumulation_depreciation_value' => (int) str_replace(['.', ','], '', $request->accumulation_depreciation_value)
             ]);
-            
+
             $request->validate([
                 'name' => 'required|string',
                 'location_id' => 'required|exists:locations,id',
@@ -66,20 +97,20 @@ class SagaraController extends Controller
                 'accumulation_depreciation_value' => 'nullable|integer',
                 'depreciation_date' => 'nullable|date',
             ]);
-            
+
             // Mengambil nilai checkbox (default 0 jika tidak dicentang)
-            $nonDepreciation = $request->input('non_depreciation', 0); 
+            $nonDepreciation = $request->input('non_depreciation', 0);
             $uuid = Str::uuid();
             $location = $request->location_id;
             $category = $request->categories_id;
             $year = \Carbon\Carbon::parse($request->accuisition_date)->format('y');
             $custom = $location.'-'.$category.'-'.$year;
             $method = $request->method;
-            
+
             $accuisitionCost = $request->accuisition_cost;
             $residualValue = $accuisitionCost * 0.1;
             $usagePeriod = $request->usage_period;
-            
+
             if ($request->has('usage_value_per_year') && $request->usage_value_per_year > 0) {
                 $usageValuePerYear = $request->usage_value_per_year;
             } else {
@@ -91,7 +122,7 @@ class SagaraController extends Controller
                     $usageValuePerYear = 0;
                 }
             }
-            
+
             if ($request->has('accumulation_depreciation_value') && $request->accumulation_depreciation_value > 0) {
                 $accumulationDepreciationValue = $request->accumulation_depreciation_value;
             } else {
@@ -158,7 +189,7 @@ class SagaraController extends Controller
                     'account_fixed_asset' => $request->account_fixed_asset,
                     'description' => $request->description,
                     'custom_number' => $custom,
-                    'non_depreciation' => 1, 
+                    'non_depreciation' => 1,
                     'accuisition_date' => $request->accuisition_date,
                     'accuisition_cost' => $accuisitionCost,
                     'created_by_id' => Auth::user()->id,
@@ -173,18 +204,16 @@ class SagaraController extends Controller
                 'transaction_number' => $transactionNumber,
                 'account' => $request->account_fixed_asset,
                 'debit' => $request->accuisition_cost,
-                'credit' => 0, 
+                'credit' => 0,
                 'created_by_id' => Auth::user()->id,
             ]);
 
             return redirect()->route('getIndex')->with('success', 'Item Added successfully.');
         } catch (\Throwable $th) {
-            return response()->json([
-                "error" => $th->getMessage(),
-            ]);
+            return back()->withInput()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan data.']);
         }
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -242,11 +271,11 @@ class SagaraController extends Controller
             $year = \Carbon\Carbon::parse($request->accuisition_date)->format('y');
             $custom = $location.'-'.$category.'-'.$year;
             $method = $request->method;
-            
+
             $accuisitionCost = $request->accuisition_cost;
             $residualValue = $accuisitionCost * 0.1;
             $usagePeriod = $request->usage_period;
-            
+
             if ($request->has('usage_value_per_year') && $request->usage_value_per_year > 0) {
                 $usageValuePerYear = $request->usage_value_per_year;
             } else {
@@ -258,7 +287,7 @@ class SagaraController extends Controller
                     $usageValuePerYear = 0;
                 }
             }
-            
+
             if ($request->has('accumulation_depreciation_value') && $request->accumulation_depreciation_value > 0) {
                 $accumulationDepreciationValue = $request->accumulation_depreciation_value;
             } else {
@@ -270,7 +299,7 @@ class SagaraController extends Controller
                     $accumulationDepreciationValue = 0;
                 }
             }
-            
+
             if ($request->non_depreciation == null) {
                 if ($method == 'STRAIGHT_LINE') {
                     $assets->update([
@@ -359,25 +388,25 @@ class SagaraController extends Controller
     {
         try {
             $asset = Assets::where('uuid', $uuid)->first();
-            
+
             if (!$asset) {
                 return redirect()->route('getIndex')->with('error', 'Asset tidak ditemukan');
             }
-            
+
             $transactionNumber = 'TRX-' . date('YmdHis') . '-' . substr($uuid, 0, 8);
-            
+
             AssetHistory::create([
                 'asset_uuid' => $asset->uuid,
                 'action' => 'deleted',
                 'transaction_number' => $transactionNumber,
                 'account' => $asset->account_fixed_asset,
-                'debit' => 0, 
+                'debit' => 0,
                 'credit' => $asset->accuisition_cost,
                 'created_by_id' => Auth::user()->id,
             ]);
-            
+
             $asset->delete();
-            
+
             return redirect()->route('getIndex')->with('success', 'Aset berhasil dihapus dan dipindahkan ke history');
         } catch (\Throwable $th) {
             return response()->json([
@@ -449,7 +478,7 @@ class SagaraController extends Controller
 
     /**
      * Menghitung penyusutan dengan metode Straight Line
-     * 
+     *
      * @param float $acquisitionCost Harga perolehan aset
      * @param float $residualValue Nilai sisa aset
      * @param int $usagePeriod Masa manfaat aset (dalam tahun)
@@ -460,13 +489,13 @@ class SagaraController extends Controller
         // Rumus: (Harga Perolehan - Nilai Sisa) / Masa Manfaat
         $depreciableAmount = $acquisitionCost - $residualValue;
         $annualDepreciation = $depreciableAmount / $usagePeriod;
-        
+
         return $annualDepreciation;
     }
 
     /**
      * Menghitung penyusutan dengan metode Reducing Balance
-     * 
+     *
      * @param float $acquisitionCost Harga perolehan aset
      * @param float $residualValue Nilai sisa aset
      * @param int $usagePeriod Masa manfaat aset (dalam tahun)
@@ -479,34 +508,34 @@ class SagaraController extends Controller
         // Rumus: 1 - pangkat(Nilai Sisa / Harga Perolehan, 1/Masa Manfaat)
         $rate = 1 - pow(($residualValue / $acquisitionCost), (1 / $usagePeriod));
         $rate = round($rate * 100) / 100; // Pembulatan ke 2 desimal
-        
+
         // Menghitung nilai buku di awal tahun
         $bookValue = $acquisitionCost;
         for ($i = 1; $i < $currentYear; $i++) {
             $depreciation = $bookValue * $rate;
             $bookValue -= $depreciation;
-            
+
             // Pastikan nilai buku tidak kurang dari nilai sisa
             if ($bookValue <= $residualValue) {
                 $bookValue = $residualValue;
                 break;
             }
         }
-        
+
         // Hitung penyusutan untuk tahun yang diminta
         $depreciation = $bookValue * $rate;
-        
+
         // Pastikan nilai buku setelah penyusutan tidak kurang dari nilai sisa
         if (($bookValue - $depreciation) < $residualValue) {
             $depreciation = $bookValue - $residualValue;
         }
-        
+
         return $depreciation;
     }
 
     /**
      * Menghitung akumulasi penyusutan dengan metode Straight Line
-     * 
+     *
      * @param float $acquisitionCost Harga perolehan aset
      * @param float $residualValue Nilai sisa aset
      * @param int $usagePeriod Masa manfaat aset (dalam tahun)
@@ -517,19 +546,19 @@ class SagaraController extends Controller
     {
         $annualDepreciation = $this->calculateStraightLineDepreciation($acquisitionCost, $residualValue, $usagePeriod);
         $accumulatedDepreciation = $annualDepreciation * $years;
-        
+
         // Pastikan akumulasi penyusutan tidak melebihi jumlah yang dapat disusutkan
         $depreciableAmount = $acquisitionCost - $residualValue;
         if ($accumulatedDepreciation > $depreciableAmount) {
             $accumulatedDepreciation = $depreciableAmount;
         }
-        
+
         return $accumulatedDepreciation;
     }
 
     /**
      * Menghitung akumulasi penyusutan dengan metode Reducing Balance
-     * 
+     *
      * @param float $acquisitionCost Harga perolehan aset
      * @param float $residualValue Nilai sisa aset
      * @param int $usagePeriod Masa manfaat aset (dalam tahun)
@@ -540,24 +569,24 @@ class SagaraController extends Controller
     {
         $rate = 1 - pow(($residualValue / $acquisitionCost), (1 / $usagePeriod));
         $rate = round($rate * 100) / 100; // Pembulatan ke 2 desimal
-        
+
         $bookValue = $acquisitionCost;
         $accumulatedDepreciation = 0;
-        
+
         for ($i = 1; $i <= $years; $i++) {
             $depreciation = $bookValue * $rate;
-            
+
             // Pastikan nilai buku tidak kurang dari nilai sisa
             if (($bookValue - $depreciation) < $residualValue) {
                 $depreciation = $bookValue - $residualValue;
                 $accumulatedDepreciation += $depreciation;
                 break;
             }
-            
+
             $accumulatedDepreciation += $depreciation;
             $bookValue -= $depreciation;
         }
-        
+
         return $accumulatedDepreciation;
     }
 
@@ -583,17 +612,17 @@ class SagaraController extends Controller
         try {
             // Temukan aset yang telah dihapus
             $asset = Assets::withTrashed()->where('uuid', $uuid)->first();
-            
+
             if (!$asset) {
                 return redirect()->route('history')->with('error', 'Aset tidak ditemukan');
             }
-            
+
             // Buat nomor transaksi unik
             $transactionNumber = 'TRX-' . date('YmdHis') . '-' . substr($uuid, 0, 8);
-            
+
             // Restore aset
             $asset->restore();
-            
+
             // Simpan ke dalam history
             AssetHistory::create([
                 'asset_uuid' => $asset->uuid,
@@ -604,7 +633,7 @@ class SagaraController extends Controller
                 'credit' => 0, // Tidak ada kredit pada restore
                 'created_by_id' => Auth::user()->id,
             ]);
-            
+
             return redirect()->route('history')->with('success', 'Aset berhasil dipulihkan');
         } catch (\Throwable $th) {
             return redirect()->route('history')->with('error', 'Gagal memulihkan aset: ' . $th->getMessage());
@@ -622,10 +651,10 @@ class SagaraController extends Controller
         try {
             // Temukan history berdasarkan ID
             $history = AssetHistory::findOrFail($id);
-            
+
             // Hapus history
             $history->delete();
-            
+
             return redirect()->route('history')->with('success', 'Riwayat berhasil dihapus');
         } catch (\Throwable $th) {
             return redirect()->route('history')->with('error', 'Gagal menghapus riwayat: ' . $th->getMessage());
