@@ -201,7 +201,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const depreciationValueInput = document.getElementById('Nilai Penyusutan');
     const accumulatedDepreciationInput = document.getElementById('Penyusutan');
     const nonDepreciationCheckbox = document.getElementById('checkbox2');
+    const acquisitionDateInput = document.getElementById('tanggal-akuisisi');
+    const depreciationDateInput = document.getElementById('Tanggal Penyusutan');
 
+    // Format angka dengan titik sebagai pemisah ribuan
     inputIds.forEach(function(id) {
         const input = document.getElementById(id);
         if (input) {
@@ -218,16 +221,41 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    function calculateStraightLineDepreciation(acquisitionCost, residualValue, usagePeriod) {
-        const depreciableAmount = acquisitionCost - residualValue;
-        return depreciableAmount / usagePeriod;
+    // Fungsi untuk menghitung tanggal penyusutan berdasarkan tanggal akuisisi dan periode penggunaan
+    function updateDepreciationDate() {
+        if (nonDepreciationCheckbox.checked) {
+            depreciationDateInput.value = '';
+            return;
+        }
+
+        const acquisitionDate = new Date(acquisitionDateInput.value);
+        const usagePeriod = parseInt(usagePeriodInput.value);
+
+        if (!isNaN(acquisitionDate.getTime()) && !isNaN(usagePeriod) && usagePeriod > 0) {
+            const depreciationDate = new Date(acquisitionDate);
+            depreciationDate.setFullYear(depreciationDate.getFullYear() + usagePeriod);
+            
+            // Format tanggal ke YYYY-MM-DD untuk input date
+            const year = depreciationDate.getFullYear();
+            const month = String(depreciationDate.getMonth() + 1).padStart(2, '0');
+            const day = String(depreciationDate.getDate()).padStart(2, '0');
+            depreciationDateInput.value = `${year}-${month}-${day}`;
+        }
     }
 
-    function calculateReducingBalanceDepreciation(acquisitionCost, residualValue, usagePeriod) {
-        const rate = 1 - Math.pow((residualValue / acquisitionCost), (1 / usagePeriod));
-        return acquisitionCost * rate;
+    // Fungsi untuk menghitung nilai penyusutan dengan metode Straight Line (5%)
+    function calculateStraightLineDepreciation(acquisitionCost) {
+        // Straight Line dengan persentase tetap 5%
+        return acquisitionCost * 0.05;
     }
 
+    // Fungsi untuk menghitung nilai penyusutan dengan metode Reducing Balance (10%)
+    function calculateReducingBalanceDepreciation(acquisitionCost) {
+        // Reducing Balance dengan persentase tetap 10%
+        return acquisitionCost * 0.10;
+    }
+
+    // Fungsi untuk memperbarui nilai penyusutan berdasarkan metode dan biaya akuisisi
     function updateDepreciationValues() {
         if (nonDepreciationCheckbox.checked) {
             depreciationValueInput.value = '';
@@ -237,34 +265,62 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const acquisitionCostStr = acquisitionCostInput.value.replace(/\./g, '').replace(',', '.');
         const acquisitionCost = parseFloat(acquisitionCostStr);
-        const usagePeriod = parseInt(usagePeriodInput.value);
 
-        if (isNaN(acquisitionCost) || isNaN(usagePeriod) || usagePeriod <= 0) {
+        if (isNaN(acquisitionCost)) {
             return;
         }
 
-        const residualValue = acquisitionCost * 0.1;
-
         let annualDepreciation = 0;
-        let accumulatedDepreciation = 0;
 
         if (methodSelect.value === 'STRAIGHT_LINE') {
-            annualDepreciation = calculateStraightLineDepreciation(acquisitionCost, residualValue, usagePeriod);
-            accumulatedDepreciation = annualDepreciation;
+            annualDepreciation = calculateStraightLineDepreciation(acquisitionCost);
         } else if (methodSelect.value === 'REDUCING_BALANCE') {
-            annualDepreciation = calculateReducingBalanceDepreciation(acquisitionCost, residualValue, usagePeriod);
-            accumulatedDepreciation = annualDepreciation;
+            annualDepreciation = calculateReducingBalanceDepreciation(acquisitionCost);
         }
 
+        // Format nilai penyusutan
         depreciationValueInput.value = Math.round(annualDepreciation).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        accumulatedDepreciationInput.value = Math.round(accumulatedDepreciation).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        accumulatedDepreciationInput.value = depreciationValueInput.value; // Untuk tahun pertama, nilai akumulasi sama dengan nilai penyusutan
     }
 
-    if (acquisitionCostInput && methodSelect && usagePeriodInput) {
+    // Tambahkan event listeners
+    if (acquisitionCostInput && methodSelect && usagePeriodInput && acquisitionDateInput) {
+        // Update tanggal penyusutan ketika tanggal akuisisi atau periode penggunaan berubah
+        acquisitionDateInput.addEventListener('change', updateDepreciationDate);
+        usagePeriodInput.addEventListener('change', function() {
+            updateDepreciationDate();
+            updateDepreciationValues();
+        });
+        
+        // Update nilai penyusutan ketika biaya akuisisi atau metode berubah
         acquisitionCostInput.addEventListener('change', updateDepreciationValues);
         methodSelect.addEventListener('change', updateDepreciationValues);
-        usagePeriodInput.addEventListener('change', updateDepreciationValues);
-        nonDepreciationCheckbox.addEventListener('change', updateDepreciationValues);
+        
+        // Update semua nilai ketika checkbox non-depresiasi berubah
+        nonDepreciationCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                methodSelect.disabled = true;
+                methodSelect.value = '';
+                usagePeriodInput.disabled = true;
+                usagePeriodInput.value = '';
+                depreciationValueInput.disabled = true;
+                depreciationValueInput.value = '';
+                accumulatedDepreciationInput.disabled = true;
+                accumulatedDepreciationInput.value = '';
+                depreciationDateInput.disabled = true;
+                depreciationDateInput.value = '';
+            } else {
+                methodSelect.disabled = false;
+                usagePeriodInput.disabled = false;
+                depreciationValueInput.disabled = false;
+                accumulatedDepreciationInput.disabled = false;
+                depreciationDateInput.disabled = false;
+                
+                // Perbarui nilai-nilai jika data sudah ada
+                updateDepreciationDate();
+                updateDepreciationValues();
+            }
+        });
     }
 });
 

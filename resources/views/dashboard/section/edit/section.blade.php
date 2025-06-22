@@ -184,4 +184,116 @@
             </form>
         </div>
     </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Inisialisasi input fields
+    const inputIds = ['biaya-akuisisi', 'Nilai Penyusutan', 'Penyusutan'];
+    const acquisitionCostInput = document.getElementById('biaya-akuisisi');
+    const methodSelect = document.getElementById('Metode');
+    const usagePeriodInput = document.getElementById('Periode Penggunaan');
+    const depreciationValueInput = document.getElementById('Nilai Penyusutan');
+    const accumulatedDepreciationInput = document.getElementById('Penyusutan');
+    const nonDepreciationCheckbox = document.getElementById('checkbox2');
+    const acquisitionDateInput = document.getElementById('tanggal-akuisisi');
+    const depreciationDateInput = document.getElementById('Tanggal Penyusutan');
+
+    // Format angka dengan titik sebagai pemisah ribuan
+    inputIds.forEach(function(id) {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('input', function () {
+                let value = this.value.replace(/[^\d,]/g, ''); // Hapus karakter selain angka dan koma
+                let [integerPart, decimalPart] = value.split(','); // Pisahkan bagian integer dan desimal
+                integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Format angka dengan titik setiap 3 digit
+                if (decimalPart) {
+                    decimalPart = decimalPart.slice(0, 2); // Ambil hanya dua digit desimal
+                }
+                // Gabungkan kembali integer dan desimal
+                this.value = decimalPart ? `${integerPart},${decimalPart}` : integerPart;
+            });
+        }
+    });
+
+    // Fungsi untuk menghitung tanggal penyusutan berdasarkan tanggal akuisisi dan periode penggunaan
+    function updateDepreciationDate() {
+        if (nonDepreciationCheckbox.checked) {
+            depreciationDateInput.value = '';
+            return;
+        }
+
+        const acquisitionDate = new Date(acquisitionDateInput.value);
+        const usagePeriod = parseInt(usagePeriodInput.value);
+
+        if (!isNaN(acquisitionDate.getTime()) && !isNaN(usagePeriod) && usagePeriod > 0) {
+            const depreciationDate = new Date(acquisitionDate);
+            depreciationDate.setFullYear(depreciationDate.getFullYear() + usagePeriod);
+            
+            // Format tanggal ke YYYY-MM-DD untuk input date
+            const year = depreciationDate.getFullYear();
+            const month = String(depreciationDate.getMonth() + 1).padStart(2, '0');
+            const day = String(depreciationDate.getDate()).padStart(2, '0');
+            depreciationDateInput.value = `${year}-${month}-${day}`;
+        }
+    }
+
+    // Fungsi untuk menghitung nilai penyusutan dengan metode Straight Line (5%)
+    function calculateStraightLineDepreciation(acquisitionCost) {
+        // Straight Line dengan persentase tetap 5%
+        return acquisitionCost * 0.05;
+    }
+
+    // Fungsi untuk menghitung nilai penyusutan dengan metode Reducing Balance (10%)
+    function calculateReducingBalanceDepreciation(acquisitionCost) {
+        // Reducing Balance dengan persentase tetap 10%
+        return acquisitionCost * 0.10;
+    }
+
+    // Fungsi untuk memperbarui nilai penyusutan berdasarkan metode dan biaya akuisisi
+    function updateDepreciationValues() {
+        if (nonDepreciationCheckbox.checked) {
+            depreciationValueInput.value = '';
+            accumulatedDepreciationInput.value = '';
+            return;
+        }
+
+        const acquisitionCostStr = acquisitionCostInput.value.replace(/\./g, '').replace(',', '.');
+        const acquisitionCost = parseFloat(acquisitionCostStr);
+
+        if (isNaN(acquisitionCost)) {
+            return;
+        }
+
+        let annualDepreciation = 0;
+
+        if (methodSelect.value === 'STRAIGHT_LINE') {
+            annualDepreciation = calculateStraightLineDepreciation(acquisitionCost);
+        } else if (methodSelect.value === 'REDUCING_BALANCE') {
+            annualDepreciation = calculateReducingBalanceDepreciation(acquisitionCost);
+        }
+
+        // Format nilai penyusutan
+        depreciationValueInput.value = Math.round(annualDepreciation).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        accumulatedDepreciationInput.value = depreciationValueInput.value; // Untuk tahun pertama, nilai akumulasi sama dengan nilai penyusutan
+    }
+
+    // Tambahkan event listeners
+    if (acquisitionCostInput && methodSelect && usagePeriodInput && acquisitionDateInput) {
+        // Update tanggal penyusutan ketika tanggal akuisisi atau periode penggunaan berubah
+        acquisitionDateInput.addEventListener('change', updateDepreciationDate);
+        usagePeriodInput.addEventListener('input', function() {
+            updateDepreciationDate();
+            updateDepreciationValues();
+        });
+        
+        // Update nilai penyusutan ketika biaya akuisisi atau metode berubah
+        acquisitionCostInput.addEventListener('change', updateDepreciationValues);
+        methodSelect.addEventListener('change', updateDepreciationValues);
+        
+        // Nonaktifkan input tanggal penyusutan karena akan dihitung otomatis
+        depreciationDateInput.readOnly = true;
+    }
+});
+</script>
 

@@ -98,8 +98,20 @@ class SagaraController extends Controller
                 'depreciation_date' => 'nullable|date',
             ]);
 
-            // Tambahkan kode ini di fungsi postStore
-            if ($request->has('accuisition_date') && $request->has('usage_period') && !$request->has('depreciation_date')) {
+            // Hitung periode penggunaan dari tanggal akuisisi dan tanggal penyusutan
+            if ($request->has('accuisition_date') && $request->has('depreciation_date') && !$request->filled('usage_period')) {
+                $acquisitionDate = \Carbon\Carbon::parse($request->accuisition_date);
+                $depreciationDate = \Carbon\Carbon::parse($request->depreciation_date);
+                
+                // Hitung selisih dalam tahun
+                $usagePeriod = $depreciationDate->diffInYears($acquisitionDate);
+                
+                // Update nilai usage_period
+                $request->merge(['usage_period' => $usagePeriod]);
+            }
+
+            // Hitung tanggal penyusutan dari tanggal akuisisi dan periode penggunaan
+            if ($request->has('accuisition_date') && $request->has('usage_period') && !$request->filled('depreciation_date')) {
                 $acquisitionDate = \Carbon\Carbon::parse($request->accuisition_date);
                 
                 // Tambahkan periode penggunaan dalam tahun
@@ -122,9 +134,16 @@ class SagaraController extends Controller
             $residualValue = $accuisitionCost * 0.1;
             $usagePeriod = $request->usage_period;
 
-            // Tambahkan variabel untuk persentase penyusutan (misalnya 5%)
-            $depreciationRate = 0.05; // 5% penyusutan
+            // Tetapkan nilai persentase penyusutan berdasarkan metode
+            if ($method == 'STRAIGHT_LINE') {
+                $depreciationRate = 0.05; // 5% untuk Straight Line
+            } else if ($method == 'REDUCING_BALANCE') {
+                $depreciationRate = 0.10; // 10% untuk Reducing Balance
+            } else {
+                $depreciationRate = 0.05; // Default
+            }
 
+            // Hitung nilai penyusutan per tahun
             if ($request->has('usage_value_per_year') && $request->usage_value_per_year > 0) {
                 $usageValuePerYear = $request->usage_value_per_year;
             } else {
@@ -284,8 +303,20 @@ class SagaraController extends Controller
                 'depreciation_date' => 'nullable|date',
             ]);
 
-            // Tambahkan kode ini di fungsi postUpdate
-            if ($request->has('accuisition_date') && $request->has('usage_period') && !$request->has('depreciation_date')) {
+            // Hitung periode penggunaan dari tanggal akuisisi dan tanggal penyusutan
+            if ($request->has('accuisition_date') && $request->has('depreciation_date') && !$request->filled('usage_period')) {
+                $acquisitionDate = \Carbon\Carbon::parse($request->accuisition_date);
+                $depreciationDate = \Carbon\Carbon::parse($request->depreciation_date);
+                
+                // Hitung selisih dalam tahun
+                $usagePeriod = $depreciationDate->diffInYears($acquisitionDate);
+                
+                // Update nilai usage_period
+                $request->merge(['usage_period' => $usagePeriod]);
+            }
+
+            // Hitung tanggal penyusutan dari tanggal akuisisi dan periode penggunaan
+            if ($request->has('accuisition_date') && $request->has('usage_period') && !$request->filled('depreciation_date')) {
                 $acquisitionDate = \Carbon\Carbon::parse($request->accuisition_date);
                 
                 // Tambahkan periode penggunaan dalam tahun
@@ -306,9 +337,16 @@ class SagaraController extends Controller
             $residualValue = $accuisitionCost * 0.1;
             $usagePeriod = $request->usage_period;
 
-            // Tambahkan variabel untuk persentase penyusutan (misalnya 5%)
-            $depreciationRate = 0.05; // 5% penyusutan
+            // Tetapkan nilai persentase penyusutan berdasarkan metode
+            if ($method == 'STRAIGHT_LINE') {
+                $depreciationRate = 0.05; // 5% untuk Straight Line
+            } else if ($method == 'REDUCING_BALANCE') {
+                $depreciationRate = 0.10; // 10% untuk Reducing Balance
+            } else {
+                $depreciationRate = 0.05; // Default
+            }
 
+            // Hitung nilai penyusutan per tahun
             if ($request->has('usage_value_per_year') && $request->usage_value_per_year > 0) {
                 $usageValuePerYear = $request->usage_value_per_year;
             } else {
