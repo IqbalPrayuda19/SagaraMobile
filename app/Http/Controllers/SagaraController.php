@@ -98,6 +98,17 @@ class SagaraController extends Controller
                 'depreciation_date' => 'nullable|date',
             ]);
 
+            // Tambahkan kode ini di fungsi postStore
+            if ($request->has('accuisition_date') && $request->has('usage_period') && !$request->has('depreciation_date')) {
+                $acquisitionDate = \Carbon\Carbon::parse($request->accuisition_date);
+                
+                // Tambahkan periode penggunaan dalam tahun
+                $depreciationDate = $acquisitionDate->copy()->addYears($request->usage_period);
+                
+                // Update nilai depreciation_date
+                $request->merge(['depreciation_date' => $depreciationDate->format('Y-m-d')]);
+            }
+
             // Mengambil nilai checkbox (default 0 jika tidak dicentang)
             $nonDepreciation = $request->input('non_depreciation', 0);
             $uuid = Str::uuid();
@@ -264,6 +275,17 @@ class SagaraController extends Controller
                 'accumulation_depreciation_value' => 'nullable|integer',
                 'depreciation_date' => 'nullable|date',
             ]);
+
+            // Tambahkan kode ini di fungsi postUpdate
+            if ($request->has('accuisition_date') && $request->has('usage_period') && !$request->has('depreciation_date')) {
+                $acquisitionDate = \Carbon\Carbon::parse($request->accuisition_date);
+                
+                // Tambahkan periode penggunaan dalam tahun
+                $depreciationDate = $acquisitionDate->copy()->addYears($request->usage_period);
+                
+                // Update nilai depreciation_date
+                $request->merge(['depreciation_date' => $depreciationDate->format('Y-m-d')]);
+            }
 
             // Create a new Sagara instance
             $location = $request->location_id;
