@@ -84,8 +84,10 @@
                                 5 %
                             @elseif($asset->method == 'Reducing Balance')
                                 10 %
+                            @elseif($asset->non_depreciation == 1)
+                                0 %
                             @else
-                                {{ $asset->usage_value_per_year}} %
+                                {{ number_format($asset->depreciation_rate * 100, 0) }} %
                             @endif
                         </td>
                         <td class="text-bold-500 text-center">-</td>
