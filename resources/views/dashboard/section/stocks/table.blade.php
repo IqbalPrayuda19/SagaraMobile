@@ -80,9 +80,9 @@
                         <td class="text-bold-500 text-center">{{ $asset->usage_period}}</td>
                         <td class="text-bold-500 text-center">-</td>
                         <td class="text-bold-500 text-center">
-                            @if($asset->method == 'straight line')
+                            @if($asset->method == 'Straight Line')
                                 5 %
-                            @elseif($asset->method == 'reducing balance')
+                            @elseif($asset->method == 'Reducing Balance')
                                 10 %
                             @else
                                 {{ $asset->usage_value_per_year}} %
