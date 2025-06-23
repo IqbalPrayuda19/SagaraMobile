@@ -135,9 +135,9 @@ class SagaraController extends Controller
             $usagePeriod = $request->usage_period;
 
             // Tetapkan nilai persentase penyusutan berdasarkan metode
-            if ($method == 'STRAIGHT_LINE') {
+            if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
                 $depreciationRate = 0.05; // 5% untuk Straight Line
-            } else if ($method == 'REDUCING_BALANCE') {
+            } else if ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
                 $depreciationRate = 0.10; // 10% untuk Reducing Balance
             } else {
                 $depreciationRate = 0.05; // Default
@@ -147,9 +147,9 @@ class SagaraController extends Controller
             if ($request->has('usage_value_per_year') && $request->usage_value_per_year > 0) {
                 $usageValuePerYear = $request->usage_value_per_year;
             } else {
-                if ($method == 'STRAIGHT_LINE') {
+                if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
                     $usageValuePerYear = $this->calculateStraightLineDepreciationWithRate($accuisitionCost, $depreciationRate);
-                } else if ($method == 'REDUCING_BALANCE') {
+                } else if ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
                     $usageValuePerYear = $this->calculateReducingBalanceDepreciationWithRate($accuisitionCost, $depreciationRate);
                 } else {
                     $usageValuePerYear = 0;
@@ -162,9 +162,9 @@ class SagaraController extends Controller
                 // Gunakan periode penggunaan sebagai jumlah tahun
                 $years = $usagePeriod;
                 
-                if ($method == 'STRAIGHT_LINE') {
+                if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
                     $accumulationDepreciationValue = $this->calculateAccumulatedStraightLineDepreciationWithRate($accuisitionCost, $depreciationRate, $years);
-                } else if ($method == 'REDUCING_BALANCE') {
+                } else if ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
                     $accumulationDepreciationValue = $this->calculateAccumulatedReducingBalanceDepreciationWithRate($accuisitionCost, $depreciationRate, $years);
                 } else {
                     $accumulationDepreciationValue = 0;
@@ -172,7 +172,7 @@ class SagaraController extends Controller
             }
 
             if ($nonDepreciation == 0) {
-                if ($method == 'STRAIGHT_LINE') {
+                if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
                     $assets = Assets::create([
                         'uuid' => $uuid,
                         'name' => $request->name,
@@ -194,7 +194,7 @@ class SagaraController extends Controller
                         'depreciation_rate' => $depreciationRate,
                         'created_by_id' => Auth::user()->id,
                     ]);
-                } elseif ($method == 'REDUCING_BALANCE') {
+                } elseif ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
                     $assets = Assets::create([
                         'uuid' => $uuid,
                         'name' => $request->name,
@@ -338,9 +338,9 @@ class SagaraController extends Controller
             $usagePeriod = $request->usage_period;
 
             // Tetapkan nilai persentase penyusutan berdasarkan metode
-            if ($method == 'STRAIGHT_LINE') {
+            if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
                 $depreciationRate = 0.05; // 5% untuk Straight Line
-            } else if ($method == 'REDUCING_BALANCE') {
+            } else if ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
                 $depreciationRate = 0.10; // 10% untuk Reducing Balance
             } else {
                 $depreciationRate = 0.05; // Default
@@ -350,9 +350,9 @@ class SagaraController extends Controller
             if ($request->has('usage_value_per_year') && $request->usage_value_per_year > 0) {
                 $usageValuePerYear = $request->usage_value_per_year;
             } else {
-                if ($method == 'STRAIGHT_LINE') {
+                if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
                     $usageValuePerYear = $this->calculateStraightLineDepreciationWithRate($accuisitionCost, $depreciationRate);
-                } else if ($method == 'REDUCING_BALANCE') {
+                } else if ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
                     $usageValuePerYear = $this->calculateReducingBalanceDepreciationWithRate($accuisitionCost, $depreciationRate);
                 } else {
                     $usageValuePerYear = 0;
@@ -365,9 +365,9 @@ class SagaraController extends Controller
                 // Gunakan periode penggunaan sebagai jumlah tahun
                 $years = $usagePeriod;
                 
-                if ($method == 'STRAIGHT_LINE') {
+                if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
                     $accumulationDepreciationValue = $this->calculateAccumulatedStraightLineDepreciationWithRate($accuisitionCost, $depreciationRate, $years);
-                } else if ($method == 'REDUCING_BALANCE') {
+                } else if ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
                     $accumulationDepreciationValue = $this->calculateAccumulatedReducingBalanceDepreciationWithRate($accuisitionCost, $depreciationRate, $years);
                 } else {
                     $accumulationDepreciationValue = 0;
@@ -375,7 +375,7 @@ class SagaraController extends Controller
             }
 
             if ($request->non_depreciation == null) {
-                if ($method == 'STRAIGHT_LINE') {
+                if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
                     $assets->update([
                         'name' => $request->name,
                         'location_id' => $request->location_id,
@@ -396,7 +396,7 @@ class SagaraController extends Controller
                         'depreciation_rate' => $depreciationRate,
                         'created_by_id' => Auth::user()->id,
                     ]);
-                } elseif ($method == 'REDUCING_BALANCE') {
+                } elseif ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
                     $assets->update([
                         'name' => $request->name,
                         'location_id' => $request->location_id,
