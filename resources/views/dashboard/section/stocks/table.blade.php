@@ -79,7 +79,15 @@
                         <td class="text-bold-500 text-center">-</td>
                         <td class="text-bold-500 text-center">{{ $asset->usage_period}}</td>
                         <td class="text-bold-500 text-center">-</td>
-                        <td class="text-bold-500 text-center">{{ $asset->usage_value_per_year}} % </td>
+                        <td class="text-bold-500 text-center">
+                            @if($asset->method == 'straight line')
+                                5 %
+                            @elseif($asset->method == 'reducing balance')
+                                10 %
+                            @else
+                                {{ $asset->usage_value_per_year}} %
+                            @endif
+                        </td>
                         <td class="text-bold-500 text-center">-</td>
                         <td class="text-bold-500 text-center">{{ $asset->depreciation_account}}</td>
                         <td class="text-bold-500 text-center">-</td>
