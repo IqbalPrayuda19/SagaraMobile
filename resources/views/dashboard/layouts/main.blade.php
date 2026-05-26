@@ -3,20 +3,63 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sagara Mobile</title>
     <link rel="stylesheet" crossorigin href="/css/app.css">
     <link rel="stylesheet" crossorigin href="/css/app-dark.css">
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        @media (max-width: 768px) {
+            #sidebar {
+                width: 75%;
+                height: 100%;
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 1030;
+                background-color: white;
+                box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            }
+        }
+
+        @media (max-width: 992px) {
+            #sidebar {
+                width: 75%;
+                height: 100%;
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 1030;
+                background-color: white;
+                box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            }
+        }
+
+        #main-content {
+            flex: 1;
+            min-width: 0;
+            width: 100%;
+        }
+
+        @media (min-width: 992px) {
+            #main-content {
+                margin-left: 300px;
+                width: calc(100% - 300px);
+            }
+        }
+    </style>
 </head>
 
-<body style="background-color: #6d7c91;">
+<body style="background-color: #435ebe;">
     <script src="SagaraMobile/resources/initTheme.js"></script>
-        <div id="app" class="d-flex " style="width: 100vw; min-height: 100vh; padding-left: 299px;">
-                @include('dashboard.section.sidebar.index')
+     {{-- Overlay untuk mobile --}}
+    <div id="overlay"></div>
+        <div id="app" class="d-flex">
+            {{-- Sidebar untuk desktop --}}
+            @include('dashboard.section.sidebar.index')
 
-            <div style="width: 100%; max-width=100vw;">
+            <div id="main-content">
                 @include('dashboard.section.header.index')
                 @if(session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -34,9 +77,40 @@
                 @yield('container')
             </div>
         </div>
-    <script>
-      feather.replace()
-    </script>
-</body>
+        <script>
+            feather.replace();
 
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('sidebarToggle');
+
+            // Toggle saat klik hamburger
+            toggleBtn?.addEventListener('click', function (event) {
+                event.stopPropagation(); // jangan trigger click dari body
+                console.log("Tombol hamburger diklik");
+
+                sidebar.classList.toggle('d-none');
+                sidebar.classList.toggle('active');
+            });
+
+            // Tutup sidebar jika klik di luar
+            document.addEventListener('click', function (event) {
+                // Cek apakah klik bukan di sidebar dan bukan di tombol toggle
+                if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+                    if (!sidebar.classList.contains('d-none')) {
+                        sidebar.classList.add('d-none');
+                        sidebar.classList.remove('active');
+                    }
+                }
+            });
+
+            // Auto-dismiss alerts after 3 seconds
+            setTimeout(function() {
+                var alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function(alertElement) {
+                    var bsAlert = bootstrap.Alert.getOrCreateInstance(alertElement);
+                    bsAlert.close();
+                });
+            }, 3000);
+        </script>
+    </body>
 </html>

@@ -1,20 +1,25 @@
-<section class=" pt-5 pb-3" style="font-family: 'Poppins', sans-serif;">
-    <div class="card mx-auto" style="max-width: 75vw;">
-        <div class="card-body px-4 py-5">
-            <h4>Settings</h4>
-            <div>
-                <h4 class="card-title mt-5 d-flex align-items-center">Penambahan Lokasi Baru <a href="/createLocations" class="ms-2">
-                    <i data-feather="plus-square" style="font-size: 2rem;"></i>
-                </a></h4>
+<div class="col-12 px-3 px-md-4 px-lg-5 py-4 py-md-5" style="font-family: 'Poppins', sans-serif;">
+    <div class="card px-4 px-md-4 px-lg-5 py-4">
+        <div class="card-header px-0 border-0 bg-transparent mb-3">
+            <h3 class="card-title mb-0">Settings</h3>
+        </div>
+        <div class="card-body px-0 py-0">
+            <div class="mb-5">
+                <h4 class="d-flex align-items-center fw-medium text-dark m-0">
+                    <a href="/createLocations" class="me-3 text-primary d-flex" title="Tambah Lokasi">
+                        <i data-feather="plus-square" style="width: 28px; height: 28px;"></i>
+                    </a>   
+                    Penambahan Lokasi Baru 
+                </h4>
             </div>
-            <div class="row g-3 mt-2">
-                <div class="col-md-6">
-                    <h4 class="card-title mt-5 mb-3 d-flex align-items-center">Penambahan Kategori Baru <a href="/createCategories" class="ms-2">
-                        <i data-feather="plus-square" style="font-size: 2rem;"></i>
-                    </a></h4>
-                </div>
+            <div class="mb-4">
+                <h4 class="d-flex align-items-center fw-medium text-dark m-0">
+                    <a href="/createCategories" class="me-3 text-primary d-flex" title="Tambah Kategori">
+                        <i data-feather="plus-square" style="width: 28px; height: 28px;"></i>
+                    </a> 
+                    Penambahan Kategori Baru 
+                </h4>
             </div>
         </div>
     </div>
-</section>
-
+</div>

@@ -1,5 +1,5 @@
-    <div class="sidebar-wrapper active border-end h-full border-1 border-secondary" style="height: 100%; min-height: 100vh;position: fixed; font-family:'Poppins', sans-serif; left:0;">
-        <div class="sidebar-header border-bottom mx-1">
+<div id="sidebar" class="sidebar-wrapper d-none d-lg-block border-end bg-white" style="font-family: 'Poppins', sans-serif;">
+    <div class="sidebar-header border-bottom mx-1">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="logo">
                     <a href="/dashboard"><img src="/Assets/logo/Logo Dashboard.png" class="img-fluid" style="max-width: 100%; height: 50px; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));" alt="Logo" srcset=""></a>
@@ -18,7 +18,7 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item {{ Request::is('asset', 'create', 'edit',) ? 'active' : ''}}">
+                <li class="sidebar-item {{ Request::is('asset', 'create', 'edit', 'asset/detail') ? 'active' : ''}}">
                     <a id="btn-dropdown" href="/asset" class='sidebar-link'>
                         <i data-feather="file" style="color: #435ebe;"></i>
                         <span>Assets</span>
@@ -32,7 +32,7 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item {{ Request::is('settings') ? 'active' : ''}}">
+                <li class="sidebar-item {{ Request::is('settings', 'createLocations', 'createCategories') ? 'active' : ''}}">
                     <a id="btn-dropdown" href="/settings" class='sidebar-link'>
                         <i data-feather="settings" style="color: #435ebe;"></i>
                         <span>Settings</span>

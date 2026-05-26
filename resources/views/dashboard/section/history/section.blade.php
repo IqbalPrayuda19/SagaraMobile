@@ -1,5 +1,5 @@
-<div class="col-12 px-5 py-5" style="font-family: 'Poppins', sans-serif;">
-    <div class="card px-5">
+<div class="col-12 px-3 px-md-4 px-lg-5 py-4 py-md-5" style="font-family: 'Poppins', sans-serif;">
+    <div id="table-history" class="card px-4 px-md-4 px-lg-5">
         <div class="card-header d-flex justify-content-between">
             <div>
                 <h3 class="card-title">History</h3>
@@ -22,7 +22,7 @@
                     @if(isset($histories) && count($histories) > 0)
                         @foreach($histories as $history)
                             <tr>
-                                <td class="text-bold-500 text-center">{{ $history->created_at->format('d-m-Y H:i:s') }}</td>
+                                <td class="text-bold-500 text-center">{{ $history->created_at->format('d-m-Y') }}</td>
                                 <td class="text-bold-500 text-center">
                                     @if($history->action == 'created')
                                         <span class="badge bg-success">Dibuat</span>

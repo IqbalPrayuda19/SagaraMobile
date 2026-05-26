@@ -43,16 +43,40 @@ class SagaraController extends Controller
                       });
                 });
             })
-            ->get();
-        return view ('dashboard.section.stocks.index', compact('assets','search'));
+            ->paginate(10)->withQueryString();
+
+        $totalAssetValue = \App\Models\Assets::sum('accuisition_cost');
+        $totalCategories = \App\Models\Categories::count();
+        $totalLocations = \App\Models\Locations::count();
+
+        return view('dashboard.section.stocks.index', compact('assets', 'search', 'totalAssetValue', 'totalCategories', 'totalLocations'));
+    }
+
+    public function getAssetDetail()
+    {
+        $totalAssetValue = \App\Models\Assets::sum('accuisition_cost');
+        $categories = \App\Models\Categories::all();
+        $locations = \App\Models\Locations::all();
+
+        return view('dashboard.section.stocks.detail', compact('totalAssetValue', 'categories', 'locations'));
     }
 
     public function getDashboardContent()
     {
         $assets = Assets::select('name', 'accuisition_cost')->take(5)->get();
-        $history =AssetHistory::pluck('transaction_number');
+        $history = AssetHistory::pluck('transaction_number');
+        $categories = Categories::latest()->take(5)->get();
 
-        return view('dashboard.section.dashboard.index', compact('assets','history'));
+        // Summary Statistics
+        $totalAssets = Assets::count();
+        $totalAssetValue = Assets::sum('accuisition_cost');
+        $totalCategories = Categories::count();
+        $totalLocations = Locations::count();
+
+        return view('dashboard.section.dashboard.index', compact(
+            'assets', 'history', 'categories', 
+            'totalAssets', 'totalAssetValue', 'totalCategories', 'totalLocations'
+        ));
     }
 
 
@@ -77,9 +101,9 @@ class SagaraController extends Controller
         try {
             // Menghapus titik pemisah ribuan
             $request->merge([
-                'accuisition_cost' => (int) str_replace(['.', ','], '', $request->accuisition_cost),
-                'usage_value_per_year' => (int) str_replace(['.', ','], '', $request->usage_value_per_year),
-                'accumulation_depreciation_value' => (int) str_replace(['.', ','], '', $request->accumulation_depreciation_value)
+                'accuisition_cost' => str_replace('.', '', $request->accuisition_cost),
+                'usage_value_per_year' => str_replace('.', '', $request->usage_value_per_year),
+                'accumulation_depreciation_value' => str_replace('.', '', $request->accumulation_depreciation_value),
             ]);
 
             $request->validate([
@@ -102,10 +126,10 @@ class SagaraController extends Controller
             if ($request->has('accuisition_date') && $request->has('depreciation_date') && !$request->filled('usage_period')) {
                 $acquisitionDate = \Carbon\Carbon::parse($request->accuisition_date);
                 $depreciationDate = \Carbon\Carbon::parse($request->depreciation_date);
-                
+
                 // Hitung selisih dalam tahun
                 $usagePeriod = $depreciationDate->diffInYears($acquisitionDate);
-                
+
                 // Update nilai usage_period
                 $request->merge(['usage_period' => $usagePeriod]);
             }
@@ -113,10 +137,10 @@ class SagaraController extends Controller
             // Hitung tanggal penyusutan dari tanggal akuisisi dan periode penggunaan
             if ($request->has('accuisition_date') && $request->has('usage_period') && !$request->filled('depreciation_date')) {
                 $acquisitionDate = \Carbon\Carbon::parse($request->accuisition_date);
-                
+
                 // Tambahkan periode penggunaan dalam tahun
                 $depreciationDate = $acquisitionDate->copy()->addYears($request->usage_period);
-                
+
                 // Update nilai depreciation_date
                 $request->merge(['depreciation_date' => $depreciationDate->format('Y-m-d')]);
             }
@@ -161,7 +185,7 @@ class SagaraController extends Controller
             } else {
                 // Gunakan periode penggunaan sebagai jumlah tahun
                 $years = $usagePeriod;
-                
+
                 if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
                     $accumulationDepreciationValue = $this->calculateAccumulatedStraightLineDepreciationWithRate($accuisitionCost, $depreciationRate, $years);
                 } else if ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
@@ -229,6 +253,13 @@ class SagaraController extends Controller
                     'non_depreciation' => 1,
                     'accuisition_date' => $request->accuisition_date,
                     'accuisition_cost' => $accuisitionCost,
+                    'method' => Method::STRAIGHT_LINE,
+                    'usage_period' => 0,
+                    'usage_value_per_year' => 0,
+                    'depreciation_account' => '-',
+                    'accumulation_depreciation_account' => '-',
+                    'accumulation_depreciation_value' => 0,
+                    'depreciation_date' => $request->accuisition_date ?? now()->format('Y-m-d'),
                     'depreciation_rate' => $depreciationRate,
                     'created_by_id' => Auth::user()->id,
                 ]);
@@ -283,177 +314,157 @@ class SagaraController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function postUpdate(Request $request, string $uuid)
-    {
-        try {
-            //code...
-            $assets = Assets::where('uuid', $uuid)->first();
-            $request->validate([
-                'name' => 'required|string',
-                'location_id' => 'required|exists:locations,id',
-                'categories_id' => 'required|exists:categories,id',
-                'account_fixed_asset' => 'nullable|string',
-                'description' => 'required|string',
-                'accuisition_date' => 'nullable|date',
-                'accuisition_cost' => 'nullable|integer',
-                'usage_period' => 'nullable|integer',
-                'usage_value_per_year' => 'nullable|integer',
-                'depreciation_account' => 'nullable|string',
-                'accumulation_depreciation_account' => 'nullable|string',
-                'accumulation_depreciation_value' => 'nullable|integer',
-                'depreciation_date' => 'nullable|date',
-            ]);
+{
+    try {
+        // Bersihkan format angka ribuan sebelum validasi
+        $request->merge([
+            'accuisition_cost' => $request->accuisition_cost
+                ? (int) str_replace('.', '', $request->accuisition_cost) : null,
 
-            // Hitung periode penggunaan dari tanggal akuisisi dan tanggal penyusutan
-            if ($request->has('accuisition_date') && $request->has('depreciation_date') && !$request->filled('usage_period')) {
-                $acquisitionDate = \Carbon\Carbon::parse($request->accuisition_date);
-                $depreciationDate = \Carbon\Carbon::parse($request->depreciation_date);
-                
-                // Hitung selisih dalam tahun
-                $usagePeriod = $depreciationDate->diffInYears($acquisitionDate);
-                
-                // Update nilai usage_period
-                $request->merge(['usage_period' => $usagePeriod]);
-            }
+            'usage_value_per_year' => $request->usage_value_per_year
+                ? (int) str_replace('.', '', $request->usage_value_per_year) : null,
 
-            // Hitung tanggal penyusutan dari tanggal akuisisi dan periode penggunaan
-            if ($request->has('accuisition_date') && $request->has('usage_period') && !$request->filled('depreciation_date')) {
-                $acquisitionDate = \Carbon\Carbon::parse($request->accuisition_date);
-                
-                // Tambahkan periode penggunaan dalam tahun
-                $depreciationDate = $acquisitionDate->copy()->addYears($request->usage_period);
-                
-                // Update nilai depreciation_date
-                $request->merge(['depreciation_date' => $depreciationDate->format('Y-m-d')]);
-            }
+            'accumulation_depreciation_value' => $request->accumulation_depreciation_value
+                ? (int) str_replace('.', '', $request->accumulation_depreciation_value) : null,
+        ]);
 
-            // Create a new Sagara instance
-            $location = $request->location_id;
-            $category = $request->categories_id;
-            $year = \Carbon\Carbon::parse($request->accuisition_date)->format('y');
-            $custom = $location.'-'.$category.'-'.$year;
-            $method = $request->method;
+        $assets = Assets::where('uuid', $uuid)->first();
 
-            $accuisitionCost = $request->accuisition_cost;
-            $residualValue = $accuisitionCost * 0.1;
-            $usagePeriod = $request->usage_period;
+        // Validasi
+        $request->validate([
+            'name' => 'required|string',
+            'location_id' => 'required|exists:locations,id',
+            'categories_id' => 'required|exists:categories,id',
+            'account_fixed_asset' => 'nullable|string',
+            'description' => 'required|string',
+            'accuisition_date' => 'nullable|date',
+            'accuisition_cost' => 'nullable|integer',
+            'usage_period' => 'nullable|integer',
+            'usage_value_per_year' => 'nullable|integer',
+            'depreciation_account' => 'nullable|string',
+            'accumulation_depreciation_account' => 'nullable|string',
+            'accumulation_depreciation_value' => 'nullable|integer',
+            'depreciation_date' => 'nullable|date',
+        ]);
 
-            // Tetapkan nilai persentase penyusutan berdasarkan metode
+        // Hitung usage period dari tanggal
+        if ($request->accuisition_date && $request->depreciation_date && !$request->usage_period) {
+            $acquisitionDate = \Carbon\Carbon::parse($request->accuisition_date);
+            $depreciationDate = \Carbon\Carbon::parse($request->depreciation_date);
+            $usagePeriod = $depreciationDate->diffInYears($acquisitionDate);
+            $request->merge(['usage_period' => $usagePeriod]);
+        }
+
+        // Hitung tanggal depreciation dari usage period
+        if ($request->accuisition_date && $request->usage_period && !$request->depreciation_date) {
+            $acquisitionDate = \Carbon\Carbon::parse($request->accuisition_date);
+            $depreciationDate = $acquisitionDate->copy()->addYears($request->usage_period);
+            $request->merge(['depreciation_date' => $depreciationDate->format('Y-m-d')]);
+        }
+
+        // Generate custom number
+        $location = $request->location_id;
+        $category = $request->categories_id;
+        $year = $request->accuisition_date
+            ? \Carbon\Carbon::parse($request->accuisition_date)->format('y')
+            : date('y');
+
+        $custom = $location . '-' . $category . '-' . $year;
+
+        $method = $request->method;
+        $accuisitionCost = $request->accuisition_cost ?? 0;
+        $usagePeriod = $request->usage_period ?? 0;
+
+        // Rate penyusutan
+        if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
+            $depreciationRate = 0.05;
+            $methodInstance = Method::STRAIGHT_LINE;
+        } elseif ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
+            $depreciationRate = 0.10;
+            $methodInstance = Method::REDUCING_BALANCE;
+        } else {
+            $depreciationRate = 0.05;
+            $methodInstance = Method::STRAIGHT_LINE;
+        }
+
+        // Penyusutan per tahun
+        if ($request->usage_value_per_year) {
+            $usageValuePerYear = $request->usage_value_per_year;
+        } else {
             if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
-                $depreciationRate = 0.05; // 5% untuk Straight Line
-            } else if ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
-                $depreciationRate = 0.10; // 10% untuk Reducing Balance
+                $usageValuePerYear = $this->calculateStraightLineDepreciationWithRate($accuisitionCost, $depreciationRate);
+            } elseif ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
+                $usageValuePerYear = $this->calculateReducingBalanceDepreciationWithRate($accuisitionCost, $depreciationRate);
             } else {
-                $depreciationRate = 0.05; // Default
+                $usageValuePerYear = 0;
             }
+        }
 
-            // Hitung nilai penyusutan per tahun
-            if ($request->has('usage_value_per_year') && $request->usage_value_per_year > 0) {
-                $usageValuePerYear = $request->usage_value_per_year;
+        // Akumulasi penyusutan
+        if ($request->accumulation_depreciation_value) {
+            $accumulationDepreciationValue = $request->accumulation_depreciation_value;
+        } else {
+            $years = $usagePeriod;
+
+            if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
+                $accumulationDepreciationValue = $this->calculateAccumulatedStraightLineDepreciationWithRate($accuisitionCost, $depreciationRate, $years);
+            } elseif ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
+                $accumulationDepreciationValue = $this->calculateAccumulatedReducingBalanceDepreciationWithRate($accuisitionCost, $depreciationRate, $years);
             } else {
-                if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
-                    $usageValuePerYear = $this->calculateStraightLineDepreciationWithRate($accuisitionCost, $depreciationRate);
-                } else if ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
-                    $usageValuePerYear = $this->calculateReducingBalanceDepreciationWithRate($accuisitionCost, $depreciationRate);
-                } else {
-                    $usageValuePerYear = 0;
-                }
+                $accumulationDepreciationValue = 0;
             }
+        }
 
-            if ($request->has('accumulation_depreciation_value') && $request->accumulation_depreciation_value > 0) {
-                $accumulationDepreciationValue = $request->accumulation_depreciation_value;
-            } else {
-                // Gunakan periode penggunaan sebagai jumlah tahun
-                $years = $usagePeriod;
-                
-                if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
-                    $accumulationDepreciationValue = $this->calculateAccumulatedStraightLineDepreciationWithRate($accuisitionCost, $depreciationRate, $years);
-                } else if ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
-                    $accumulationDepreciationValue = $this->calculateAccumulatedReducingBalanceDepreciationWithRate($accuisitionCost, $depreciationRate, $years);
-                } else {
-                    $accumulationDepreciationValue = 0;
-                }
-            }
-
-            if ($request->non_depreciation == null) {
-                if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
-                    $assets->update([
-                        'name' => $request->name,
-                        'location_id' => $request->location_id,
-                        'categories_id' => $request->categories_id,
-                        'account_fixed_asset' => $request->account_fixed_asset,
-                        'description' => $request->description,
-                        'custom_number' => $custom,
-                        'non_depreciation' => 0,
-                        'accuisition_date' => $request->accuisition_date,
-                        'accuisition_cost' => $accuisitionCost,
-                        'method' => Method::STRAIGHT_LINE,
-                        'usage_period' => $usagePeriod,
-                        'usage_value_per_year' => $usageValuePerYear,
-                        'depreciation_account' => $request->depreciation_account,
-                        'accumulation_depreciation_account' => $request->accumulation_depreciation_account,
-                        'accumulation_depreciation_value' => $accumulationDepreciationValue,
-                        'depreciation_date' => $request->depreciation_date,
-                        'depreciation_rate' => $depreciationRate,
-                        'created_by_id' => Auth::user()->id,
-                    ]);
-                } elseif ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
-                    $assets->update([
-                        'name' => $request->name,
-                        'location_id' => $request->location_id,
-                        'categories_id' => $request->categories_id,
-                        'account_fixed_asset' => $request->account_fixed_asset,
-                        'description' => $request->description,
-                        'custom_number' => $custom,
-                        'non_depreciation' => 0,
-                        'accuisition_date' => $request->accuisition_date,
-                        'accuisition_cost' => $accuisitionCost,
-                        'method' => Method::REDUCING_BALANCE,
-                        'usage_period' => $usagePeriod,
-                        'usage_value_per_year' => $usageValuePerYear,
-                        'depreciation_account' => $request->depreciation_account,
-                        'accumulation_depreciation_account' => $request->accumulation_depreciation_account,
-                        'accumulation_depreciation_value' => $accumulationDepreciationValue,
-                        'depreciation_date' => $request->depreciation_date,
-                        'depreciation_rate' => $depreciationRate,
-                        'created_by_id' => Auth::user()->id,
-                    ]);
-                }
-            } else {
-                $assets->update([
-                    'name' => $request->name,
-                    'location_id' => $request->location_id,
-                    'categories_id' => $request->categories_id,
-                    'account_fixed_asset' => $request->account_fixed_asset,
-                    'description' => $request->description,
-                    'custom_number' => $custom,
-                    'non_depreciation' => 1,
-                    'accuisition_date' => $request->accuisition_date,
-                    'accuisition_cost' => $accuisitionCost,
-                    'depreciation_rate' => $depreciationRate,
-                    'created_by_id' => Auth::user()->id,
-                ]);
-            }
-
-            $transactionNumber = 'TRX-' . date('YmdHis') . '-' . substr($assets->uuid, 0, 8);
-
-            AssetHistory::create([
-                'asset_uuid' => $assets->uuid,
-                'action' => 'updated',
-                'transaction_number' => $transactionNumber,
-                'account' => $request->account_fixed_asset,
-                'debit' => $request->accuisition_cost - $assets->getOriginal('accuisition_cost'), // Selisih nilai jika ada kenaikan
-                'credit' => $assets->getOriginal('accuisition_cost') - $request->accuisition_cost, // Selisih nilai jika ada penurunan
+        // Update asset
+        if ($request->non_depreciation == null) {
+            $assets->update([
+                'name' => $request->name,
+                'location_id' => $request->location_id,
+                'categories_id' => $request->categories_id,
+                'account_fixed_asset' => $request->account_fixed_asset,
+                'description' => $request->description,
+                'custom_number' => $custom,
+                'non_depreciation' => 0,
+                'accuisition_date' => $request->accuisition_date,
+                'accuisition_cost' => $accuisitionCost,
+                'method' => $methodInstance,
+                'usage_period' => $usagePeriod,
+                'usage_value_per_year' => $usageValuePerYear,
+                'depreciation_account' => $request->depreciation_account,
+                'accumulation_depreciation_account' => $request->accumulation_depreciation_account,
+                'accumulation_depreciation_value' => $accumulationDepreciationValue,
+                'depreciation_date' => $request->depreciation_date,
+                'depreciation_rate' => $depreciationRate,
                 'created_by_id' => Auth::user()->id,
             ]);
-
-            return redirect()->route('getIndex')->with('success', 'Item Added successfully.');
-        } catch (\Throwable $th) {
-            //throw $th;
-            return response()->json([
-                "error" => $th->getMessage(),
+        } else {
+            $assets->update([
+                'name' => $request->name,
+                'location_id' => $request->location_id,
+                'categories_id' => $request->categories_id,
+                'account_fixed_asset' => $request->account_fixed_asset,
+                'description' => $request->description,
+                'custom_number' => $custom,
+                'non_depreciation' => 1,
+                'accuisition_date' => $request->accuisition_date,
+                'accuisition_cost' => $accuisitionCost,
+                'method' => Method::STRAIGHT_LINE,
+                'usage_period' => 0,
+                'usage_value_per_year' => 0,
+                'depreciation_account' => '-',
+                'accumulation_depreciation_account' => '-',
+                'accumulation_depreciation_value' => 0,
+                'depreciation_date' => $request->accuisition_date ?? now()->format('Y-m-d'),
+                'depreciation_rate' => $depreciationRate,
+                'created_by_id' => Auth::user()->id,
             ]);
-        };
+        }
+
+        return redirect()->route('getIndex')->with('success', 'Asset berhasil diupdate');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', $e->getMessage());
     }
+}
 
     /**
      * Remove the specified resource from storage.
@@ -750,7 +761,7 @@ class SagaraController extends Controller
     {
         // Rumus: Harga Perolehan * Persentase Penyusutan
         $annualDepreciation = $acquisitionCost * $depreciationRate;
-        
+
         return $annualDepreciation;
     }
 
@@ -767,7 +778,7 @@ class SagaraController extends Controller
         // Rumus: Harga Perolehan - (Harga Perolehan * Persentase Penyusutan * Tahun)
         $totalDepreciation = $acquisitionCost * $depreciationRate * $years;
         $bookValue = $acquisitionCost - $totalDepreciation;
-        
+
         // Pastikan nilai buku tidak negatif
         return max(0, $bookValue);
     }
@@ -784,7 +795,7 @@ class SagaraController extends Controller
     {
         // Rumus: Harga Perolehan * Persentase Penyusutan * Tahun
         $accumulatedDepreciation = $acquisitionCost * $depreciationRate * $years;
-        
+
         // Pastikan akumulasi penyusutan tidak melebihi harga perolehan
         return min($acquisitionCost, $accumulatedDepreciation);
     }
@@ -801,15 +812,15 @@ class SagaraController extends Controller
     {
         // Menghitung nilai buku di awal tahun
         $bookValue = $acquisitionCost;
-        
+
         for ($i = 1; $i < $currentYear; $i++) {
             $depreciation = $bookValue * $depreciationRate;
             $bookValue -= $depreciation;
         }
-        
+
         // Hitung penyusutan untuk tahun yang diminta
         $depreciation = $bookValue * $depreciationRate;
-        
+
         return $depreciation;
     }
 
@@ -824,12 +835,12 @@ class SagaraController extends Controller
     private function calculateReducingBalanceBookValueWithRate($acquisitionCost, $depreciationRate, $years)
     {
         $bookValue = $acquisitionCost;
-        
+
         for ($i = 1; $i <= $years; $i++) {
             $depreciation = $bookValue * $depreciationRate;
             $bookValue -= $depreciation;
         }
-        
+
         // Pastikan nilai buku tidak negatif
         return max(0, $bookValue);
     }
@@ -846,13 +857,13 @@ class SagaraController extends Controller
     {
         $bookValue = $acquisitionCost;
         $accumulatedDepreciation = 0;
-        
+
         for ($i = 1; $i <= $years; $i++) {
             $depreciation = $bookValue * $depreciationRate;
             $bookValue -= $depreciation;
             $accumulatedDepreciation += $depreciation;
         }
-        
+
         return $accumulatedDepreciation;
     }
 }

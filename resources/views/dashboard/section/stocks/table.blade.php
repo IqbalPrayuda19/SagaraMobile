@@ -1,25 +1,33 @@
-<div class="col-12 px-5 py-5" style="font-family: 'Poppins', sans-serif;">
-    <div class="card px-5">
-        <div class="card-header d-flex justify-content-between">
+<div class="col-12 px-3 px-md-4 px-lg-5 py-4 py-md-5" style="font-family: 'Poppins', sans-serif;">
+    <div id="my-table" class="card px-4 px-md-4 px-lg-5">
+        <div id="title-asset" class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
             <div>
-                <h3 class="card-title">Assets</h3>
+                <h3 class="card-title px-2 mb-0">Assets</h3>
             </div>
-            <form action="{{ route('getIndex') }}" method="GET" class="mx-2 w-50">
-                <div class="input-group border border-1 border-secondary rounded">
-                    <input type="text" name="search" class="form-control" placeholder="Cari aset..." value="{{ request('search') }}">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary border-0" type="submit">
-                            <i data-feather="search"></i>
-                        </button>
+
+            <div id="form-title-asset" class="d-flex w-100 justify-content-md-end justify-content-between align-items-center gap-2">
+                <form action="{{ route('getIndex') }}" method="GET" class="mx-2 flex-grow-1" style="max-width: 300px;">
+                    <div id="input-search" class="input-group border border-1 border-secondary rounded">
+                        <input type="text" name="search" class="form-control" placeholder="Cari aset..." value="{{ request('search') }}">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary border-0" type="submit">
+                                <i data-feather="search"></i>
+                            </button>
+                        </div>
                     </div>
+                </form>
+                <div id="form-title-asset-plus" class="px-2 d-flex align-items-center">
+                    <a href="/asset/detail" class="px-2 text-dark" title="Lihat Detail Statistik">
+                        <i data-feather="info"></i>
+                    </a>
+                    <a href="/create" class="px-2" title="Tambah Assets">
+                        <i data-feather="plus"></i>
+                    </a>
                 </div>
-            </form>
-            <div class="px-2">
-                <a href="/create" class="px-2"><i data-feather="plus"></i></a>
             </div>
         </div>
-        <div class="table-responsive" style="overflow-x: auto; display: block;">
-            <table class="table table-nowrap" style="overflow-x: auto; min-width: max-content;">
+        <div class="table-responsive" style="overflow-x: auto;">
+            <table class="table" style="white-space: nowrap;">
                 <thead class="thead-dark">
                     <tr style="padding-right: 10px;">
                         <th class="text-bold-500 text-center">Nama</th>
@@ -41,8 +49,6 @@
                         <th class="text-bold-500 text-center">Metode</th>
                         <th class="text-bold-500 text-center">-</th>
                         <th class="text-bold-500 text-center">Periode Penggunaan</th>
-                        <th class="text-bold-500 text-center">-</th>
-                        <th class="text-bold-500 text-center">Nilai Penyusutan Pertahun</th>
                         <th class="text-bold-500 text-center">-</th>
                         <th class="text-bold-500 text-center">Depresiasi Akun Penyusutan</th>
                         <th class="text-bold-500 text-center">-</th>
@@ -79,7 +85,7 @@
                         <td class="text-bold-500 text-center">-</td>
                         <td class="text-bold-500 text-center">{{ $asset->usage_period}}</td>
                         <td class="text-bold-500 text-center">-</td>
-                        <td class="text-bold-500 text-center">
+                        {{-- <td class="text-bold-500 text-center">
                             @if($asset->method == 'Straight Line')
                                 5 %
                             @elseif($asset->method == 'Reducing Balance')
@@ -89,8 +95,8 @@
                             @else
                                 {{ number_format($asset->depreciation_rate * 100, 0) }} %
                             @endif
-                        </td>
-                        <td class="text-bold-500 text-center">-</td>
+                        </td> --}}
+                        {{-- <td class="text-bold-500 text-center">-</td> --}}
                         <td class="text-bold-500 text-center">{{ $asset->depreciation_account}}</td>
                         <td class="text-bold-500 text-center">-</td>
                         <td class="text-bold-500 text-center">{{ $asset->accumulation_depreciation_account}}</td>
@@ -102,8 +108,10 @@
                         <td class="text-bold-500 text-center">
                         <form action="{{route('destroy', $asset->uuid)}}" method="POST">
                             @csrf
-                            <a href="{{route('getEdit', $asset->uuid)}}"><i class="badge-circle badge-circle-light-secondary text-success font-medium-1 mx-1" style="width:18px; height:18px;" data-feather="edit"></i></a>
-                            <button type="submit" onclick="return confirmDelete(event, this.form)" class="border-0 bg-white">
+                            <a href="{{route('getEdit', $asset->uuid)}}" title="Edit Assets">
+                                <i class="badge-circle badge-circle-light-secondary text-success font-medium-1 mx-1" style="width:18px; height:18px;" data-feather="edit"></i>
+                            </a>
+                            <button type="submit" onclick="return confirmDelete(event, this.form)" class="border-0 bg-white" title="Hapus Assets">
                             <i class=" border-0 badge-circle badge-circle-light-secondary text-danger font-medium-1" style="width:18px; height:18px;" data-feather="trash"></i>
                             </button>
                             <script>
@@ -139,6 +147,8 @@
                 @endif
             </table>
         </div>
+        <div class="d-flex justify-content-end mt-4 px-3">
+            {{ $assets->links('pagination::bootstrap-5') }}
+        </div>
     </div>
 </div>
-

@@ -1,6 +1,6 @@
-<section class=" pt-5 pb-3" style="font-family: 'Poppins', sans-serif;">
-    <div class="card mx-auto" style="max-width: 75vw;">
-        <div class="card-header d-flex justify-content-between align-items-center px-4 py-2">
+<div class="col-12 px-3 px-md-4 px-lg-5 py-4 py-md-5" style="font-family: 'Poppins', sans-serif;">
+    <div class="card rounded-4 px-4 px-md-4 px-lg-5 py-4 shadow border-0 position-relative">
+        <div class="card-header d-flex justify-content-between align-items-center bg-white border-0 py-2">
         </div>
         <a href="/asset" class="position-absolute top-0 start-0 mt-3 ms-3">
             <i data-feather="arrow-left" class="me-2" style="font-size: 2rem;"></i>
@@ -185,7 +185,7 @@
                     <input name="depreciation_date" type="date" class="form-control" id="Tanggal Penyusutan" required>
                 </div>
                 <div class="d-grid gap-2 mt-3">
-                    <button type="submit" class="btn btn-primary">simpan</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                     <a href="/asset" class="btn btn-secondary">Batal</a>
                 </div>
             </form>
@@ -339,5 +339,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 </script>
+</div>
 
 

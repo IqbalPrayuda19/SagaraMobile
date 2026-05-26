@@ -51,9 +51,11 @@
                         <label for="akun-asset" class="form-label fw-semibold">Kategori</label>
                             <select name="categories_id" class="form-select" id="akun-asset">
                                 <option value="" disabled> Pilih </option>
-                               @foreach ($categories as $category )
-                                    <option value="{{$category->id}} {{$assets->category_id == $category->id ? 'selected':''}}">{{$category->name}}</option>
-                               @endforeach
+                            @foreach ($categories as $category )
+                                    <option value="{{$category->id}}" {{$assets->categories_id == $category->id ? 'selected' : ''}}>
+                                        {{$category->name}}
+                                    </option>
+                            @endforeach
                             </select>
                     </div>
                     <div class="col-md-6">
@@ -79,7 +81,40 @@
                 </div>
                 <h4 class="card-title mt-4 mb-4">Penyusutan</h4>
                 <div class="checkbox mb-4">
-                    <input name="non_depreciation" {{$assets->non_depreciation == 1 ? 'checked':''}} type="checkbox" class="form-check-input me-2" id="checkbox2">
+                   <input name="non_depreciation" {{$assets->non_depreciation == 1 ? 'checked':''}} type="checkbox" class="form-check-input me-2 cursor-pointer" id="checkbox2" value="1" onchange="
+                        const method = document.getElementById('Metode');
+                        const depreciationAccount = document.getElementById('Akun penyusutan');
+                        const usagePeriod = document.getElementById('Periode Penggunaan');
+                        const accumulationDepreciationAccount = document.getElementById('Akumulasi Akun Penyusutan');
+                        const usageValuePerYear = document.getElementById('Nilai Penyusutan');
+                        const accumulationDepreciationValue = document.getElementById('Penyusutan');
+                        const depreciationDate = document.getElementById('Tanggal Penyusutan');
+
+                        if (this.checked) {
+                            method.disabled = true;
+                            method.value = '';
+                            depreciationAccount.disabled = true;
+                            depreciationAccount.value = '';
+                            usagePeriod.disabled = true;
+                            usagePeriod.value = '';
+                            accumulationDepreciationAccount.disabled = true;
+                            accumulationDepreciationAccount.value = '';
+                            usageValuePerYear.disabled = true;
+                            usageValuePerYear.value = '';
+                            accumulationDepreciationValue.disabled = true;
+                            accumulationDepreciationValue.value = '';
+                            depreciationDate.disabled = true;
+                            depreciationDate.value = '';
+                        } else {
+                            method.disabled = false;
+                            depreciationAccount.disabled = false;
+                            usagePeriod.disabled = false;
+                            accumulationDepreciationAccount.disabled = false;
+                            usageValuePerYear.disabled = false;
+                            accumulationDepreciationValue.disabled = false;
+                            depreciationDate.disabled = false;
+                        }
+                    ">
                         <label for="checkbox2">Assets non Depresiasi</label>
                     </div>
                 <div class="mb-3">
@@ -90,7 +125,9 @@
                             <select name="method" class="form-select" id="Metode">
                                 <option value="" disabled> Pilih </option>
                                 @foreach (\App\Enums\Method::cases() as $method)
-                                    <option value="{{ $method->name }}" {{$assets->method}}>{{ $method->value }}</option>
+                                    <option value="{{ $method->name }}" {{ ($assets->method === $method || $assets->method == $method->value || $assets->method == $method->name) ? 'selected' : '' }}>
+                                        {{ $method->value }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -199,6 +236,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const acquisitionDateInput = document.getElementById('tanggal-akuisisi');
     const depreciationDateInput = document.getElementById('Tanggal Penyusutan');
 
+    if (nonDepreciationCheckbox && nonDepreciationCheckbox.checked) {
+        nonDepreciationCheckbox.dispatchEvent(new Event('change'));
+    }
+
     // Format angka dengan titik sebagai pemisah ribuan
     inputIds.forEach(function(id) {
         const input = document.getElementById(id);
@@ -229,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!isNaN(acquisitionDate.getTime()) && !isNaN(usagePeriod) && usagePeriod > 0) {
             const depreciationDate = new Date(acquisitionDate);
             depreciationDate.setFullYear(depreciationDate.getFullYear() + usagePeriod);
-            
+
             // Format tanggal ke YYYY-MM-DD untuk input date
             const year = depreciationDate.getFullYear();
             const month = String(depreciationDate.getMonth() + 1).padStart(2, '0');
@@ -275,11 +316,11 @@ document.addEventListener('DOMContentLoaded', function () {
             totalDepreciation = annualDepreciation * usagePeriod;
         } else if (methodSelect.value === 'REDUCING_BALANCE') {
             annualDepreciation = calculateReducingBalanceDepreciation(acquisitionCost);
-            
+
             // Hitung total penyusutan dengan metode saldo menurun
             let remainingValue = acquisitionCost;
             totalDepreciation = 0;
-            
+
             for (let i = 0; i < usagePeriod; i++) {
                 const yearDepreciation = remainingValue * 0.10;
                 totalDepreciation += yearDepreciation;
@@ -300,11 +341,11 @@ document.addEventListener('DOMContentLoaded', function () {
             updateDepreciationDate();
             updateDepreciationValues();
         });
-        
+
         // Update nilai penyusutan ketika biaya akuisisi atau metode berubah
         acquisitionCostInput.addEventListener('change', updateDepreciationValues);
         methodSelect.addEventListener('change', updateDepreciationValues);
-        
+
         // Nonaktifkan input tanggal penyusutan karena akan dihitung otomatis
         depreciationDateInput.readOnly = true;
     }

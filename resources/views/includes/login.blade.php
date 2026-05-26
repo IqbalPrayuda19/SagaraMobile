@@ -1,13 +1,14 @@
 <x-guest-layout>
-    <section class="h-100" style="font-family: 'Poppins', sans-serif;">
-        <div class="container h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                    <div class="card shadow-2-strong" style="border-radius: 1rem;">
-                        <div class="card-body p-5 text-center">
+    <section class="min-vh-100 d-flex align-items-center justify-content-center" style="font-family: 'Poppins', sans-serif; background-color: #435ebe;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card shadow border-0 rounded-4">
+                        <div class="card-body p-4 p-md-5 text-center">
+
                             <!-- Logo -->
                             <div class="mb-4">
-                                <img src="/Assets/logo/Logo.png" class="img-fluid " style="max-width: 100px; border-radius: 10px; height: 60px; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));" alt="Logo">
+                                <img src="/Assets/logo/Logo.png" class="img-fluid" style="max-width: 100px; height: 60px; border-radius: 10px; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));" alt="Logo">
                             </div>
 
                             <!-- Session Status -->
@@ -19,25 +20,25 @@
                                 @csrf
 
                                 <!-- Email -->
-                                <div class="form-outline mb-4 text-start">
+                                <div class="form-outline mb-3 text-start">
                                     <x-text-input id="email" class="form-control form-control-lg" type="email" name="email" :value="old('email')" required autofocus placeholder="Masukkan Email" />
                                     <x-input-error :messages="$errors->get('email')" class="mt-2 text-danger" />
                                 </div>
 
                                 <!-- Password -->
-                                <div class="form-outline mb-4 text-start">
+                                <div class="form-outline mb-3 text-start">
                                     <x-text-input id="password" class="form-control form-control-lg" type="password" name="password" required placeholder="Masukkan Password" />
                                     <x-input-error :messages="$errors->get('password')" class="mt-2 text-danger" />
                                 </div>
 
                                 <!-- Remember Me -->
-                                <div class="form-check d-flex justify-content-start mb-4">
+                                <div class="form-check d-flex justify-content-start mb-3">
                                     <input class="form-check-input" type="checkbox" id="remember_me" name="remember">
                                     <label class="form-check-label ms-2" for="remember_me">Ingat Saya</label>
                                 </div>
 
                                 <!-- Submit -->
-                                <x-primary-button class="btn btn-primary text-white btn-lg btn-block w-100 mb-3">
+                                <x-primary-button class="btn btn-primary text-white btn-lg w-100">
                                     {{ __('Login') }}
                                 </x-primary-button>
                             </form>

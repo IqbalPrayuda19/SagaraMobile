@@ -15,6 +15,7 @@ Route::get('/dashboard', [App\Http\Controllers\SagaraController::class, 'getDash
     ->name('dashboard');
 // assets
 Route::get('/asset',[App\Http\Controllers\SagaraController::class, 'getIndex'])->middleware(['auth', 'verified'])->name('getIndex');
+Route::get('/asset/detail',[App\Http\Controllers\SagaraController::class, 'getAssetDetail'])->middleware(['auth', 'verified'])->name('assetDetail');
 // createAssets
 Route::get('/create', [App\Http\Controllers\SagaraController::class, 'create'])->middleware(['auth', 'verified'])->name('create');
 Route::post('/create', [App\Http\Controllers\SagaraController::class, 'postStore'])->middleware(['auth', 'verified'])->name('postStore');
