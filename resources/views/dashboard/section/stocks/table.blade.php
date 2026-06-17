@@ -69,7 +69,7 @@
                         <td class="text-bold-500 text-center">-</td>
                         <td class="text-bold-500 text-center">{{ $asset->locations->name}}</td>
                         <td class="text-bold-500 text-center">-</td>
-                        <td class="text-bold-500 text-center">{{ $asset->categories->name}}</td>
+                        <td class="text-bold-500 text-center">{{ $asset->categories->name}} @if($asset->categories->percentage > 0) ({{ number_format($asset->categories->percentage, $asset->categories->percentage == floor($asset->categories->percentage) ? 0 : 1, ',', '.') }}%) @endif</td>
                         <td class="text-bold-500 text-center">-</td>
                         <td class="text-bold-500 text-center">{{ $asset->location_id}} - {{ $asset->categories_id}} - {{\Carbon\Carbon::parse( $asset->accuisition_date )->format('y')}}</td>
                         <td class="text-bold-500 text-center">-</td>

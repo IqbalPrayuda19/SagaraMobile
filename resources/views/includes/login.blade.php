@@ -21,20 +21,20 @@
 
                                 <!-- Email -->
                                 <div class="form-outline mb-3 text-start">
-                                    <x-text-input id="email" class="form-control form-control-lg" type="email" name="email" :value="old('email')" required autofocus placeholder="Masukkan Email" />
+                                    <x-text-input id="email" class="form-control form-control-lg" type="email" name="email" :value="old('email')" required autofocus placeholder="Enter Email" />
                                     <x-input-error :messages="$errors->get('email')" class="mt-2 text-danger" />
                                 </div>
 
                                 <!-- Password -->
                                 <div class="form-outline mb-3 text-start">
-                                    <x-text-input id="password" class="form-control form-control-lg" type="password" name="password" required placeholder="Masukkan Password" />
+                                    <x-text-input id="password" class="form-control form-control-lg" type="password" name="password" required placeholder="Enter Password" />
                                     <x-input-error :messages="$errors->get('password')" class="mt-2 text-danger" />
                                 </div>
 
                                 <!-- Remember Me -->
                                 <div class="form-check d-flex justify-content-start mb-3">
                                     <input class="form-check-input" type="checkbox" id="remember_me" name="remember">
-                                    <label class="form-check-label ms-2" for="remember_me">Ingat Saya</label>
+                                    <label class="form-check-label ms-2" for="remember_me">Remember Me</label>
                                 </div>
 
                                 <!-- Submit -->

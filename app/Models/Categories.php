@@ -12,6 +12,7 @@ class Categories extends Model
     protected $fillable = [
         'id',
         'name',
+        'percentage',
         'created_by_id',
     ];
 

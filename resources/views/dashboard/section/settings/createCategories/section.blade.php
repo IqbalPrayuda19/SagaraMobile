@@ -10,8 +10,50 @@
 
                 <div class="mb-3">
                     <label for="detail-asset" class="form-label fw-semibold">Jenis Kategori<span class="text-danger mx-3">*</span></label>
-                    <input name="name" type="text" class="form-control" id="nama aset" placeholder="Nama Kategori">
+                    <input name="name" type="text" class="form-control" id="nama aset" placeholder="Nama Kategori" required>
                 </div>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="is_depreciated" checked>
+                    <label class="form-check-label fw-semibold" for="is_depreciated">
+                        Kategori ini menyusut?
+                    </label>
+                </div>
+                
+                <div class="mb-3" id="percentage_container">
+                    <label for="percentage" class="form-label fw-semibold">Persentase (%)<span class="text-danger mx-3">*</span></label>
+                    <input name="percentage" type="text" class="form-control" id="percentage" placeholder="Contoh: 12.5 atau 12,5" required value="0">
+                </div>
+
+                <script>
+                    document.getElementById('is_depreciated').addEventListener('change', function() {
+                        const container = document.getElementById('percentage_container');
+                        const input = document.getElementById('percentage');
+                        if (this.checked) {
+                            container.style.display = 'block';
+                            input.required = true;
+                        } else {
+                            container.style.display = 'none';
+                            input.required = false;
+                            input.value = 0;
+                        }
+                    });
+
+                    // Otomatis ubah koma menjadi titik dan pastikan hanya angka/titik yang bisa diketik
+                    document.getElementById('percentage').addEventListener('input', function() {
+                        let value = this.value;
+                        // Ubah koma ke titik
+                        value = value.replace(',', '.');
+                        // Hapus karakter selain angka dan titik
+                        value = value.replace(/[^0-9.]/g, '');
+                        // Pastikan hanya ada satu titik
+                        const parts = value.split('.');
+                        if (parts.length > 2) {
+                            value = parts[0] + '.' + parts.slice(1).join('');
+                        }
+                        this.value = value;
+                    });
+                </script>
 
                 <div class="d-grid gap-2 mt-4">
                     <button type="submit" class="btn btn-primary">Simpan</button>

@@ -49,10 +49,12 @@
                 <div class="row g-3 mt-2">
                     <div class="col-md-6">
                         <label for="akun-asset" class="form-label fw-semibold">Kategori<span class="text-danger mx-3">*</span></label>
-                            <select name="categories_id" class="form-select" id="akun-asset" required>
+                            <select name="categories_id" class="form-select" id="kategori-asset" required>
                                 <option value="" selected disabled> Pilih </option>
                                @foreach ($categories as $category )
-                                    <option value="{{$category->id}}">{{$category->name}}</option>
+                                    <option value="{{$category->id}}" data-percentage="{{$category->percentage}}">
+                                        {{$category->name}} @if($category->percentage > 0) ({{ number_format($category->percentage, $category->percentage == floor($category->percentage) ? 0 : 1, ',', '.') }}%) @endif
+                                    </option>
                                @endforeach
                             </select>
                     </div>
@@ -208,15 +210,24 @@ document.addEventListener('DOMContentLoaded', function () {
     inputIds.forEach(function(id) {
         const input = document.getElementById(id);
         if (input) {
-            input.addEventListener('input', function () {
-                let value = this.value.replace(/[^\d,]/g, ''); // Hapus karakter selain angka dan koma
+            // Fungsi untuk memformat nilai
+            const formatValue = (val) => {
+                if (!val) return '';
+                let value = val.toString().replace(/[^\d,]/g, ''); // Hapus karakter selain angka dan koma
                 let [integerPart, decimalPart] = value.split(','); // Pisahkan bagian integer dan desimal
                 integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Format angka dengan titik setiap 3 digit
                 if (decimalPart) {
                     decimalPart = decimalPart.slice(0, 2); // Ambil hanya dua digit desimal
                 }
-                // Gabungkan kembali integer dan desimal
-                this.value = decimalPart ? `${integerPart},${decimalPart}` : integerPart;
+                return decimalPart ? `${integerPart},${decimalPart}` : integerPart;
+            };
+
+            // Format nilai awal saat halaman dimuat
+            input.value = formatValue(input.value);
+
+            // Tambahkan event listener untuk memformat saat pengetikan
+            input.addEventListener('input', function () {
+                this.value = formatValue(this.value);
             });
         }
     });
@@ -243,16 +254,23 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Fungsi untuk menghitung nilai penyusutan dengan metode Straight Line (5%)
-    function calculateStraightLineDepreciation(acquisitionCost) {
-        // Straight Line dengan persentase tetap 5%
-        return acquisitionCost * 0.05;
+    const categorySelect = document.getElementById('kategori-asset');
+
+    // Fungsi untuk mendapatkan rate dari kategori yang dipilih
+    function getDepreciationRate() {
+        const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+        const percentage = selectedOption ? parseFloat(selectedOption.getAttribute('data-percentage')) : 0;
+        return isNaN(percentage) ? 0 : percentage / 100;
     }
 
-    // Fungsi untuk menghitung nilai penyusutan dengan metode Reducing Balance (10%)
-    function calculateReducingBalanceDepreciation(acquisitionCost) {
-        // Reducing Balance dengan persentase tetap 10%
-        return acquisitionCost * 0.10;
+    // Fungsi untuk menghitung nilai penyusutan dengan metode Straight Line
+    function calculateStraightLineDepreciation(acquisitionCost, rate) {
+        return acquisitionCost * rate;
+    }
+
+    // Fungsi untuk menghitung nilai penyusutan dengan metode Reducing Balance
+    function calculateReducingBalanceDepreciation(acquisitionCost, rate) {
+        return acquisitionCost * rate;
     }
 
     // Fungsi untuk memperbarui nilai penyusutan berdasarkan metode dan biaya akuisisi
@@ -266,29 +284,34 @@ document.addEventListener('DOMContentLoaded', function () {
         const acquisitionCostStr = acquisitionCostInput.value.replace(/\./g, '').replace(',', '.');
         const acquisitionCost = parseFloat(acquisitionCostStr);
         const usagePeriod = parseInt(usagePeriodInput.value) || 1; // Gunakan 1 jika tidak ada nilai
+        const rate = getDepreciationRate();
 
-        if (isNaN(acquisitionCost)) {
+        if (isNaN(acquisitionCost) || isNaN(rate)) {
             return;
         }
 
-        let annualDepreciation = 0;
+        // 1. Hitung Nilai Penyusutan Bulanan (Dasar aturan pajak)
+        const monthlyDepreciation = (acquisitionCost * rate) / 12;
+
+        // 2. Nilai Penyusutan Pertahun (Jumlah dari 12 bulan)
+        let annualDepreciation = monthlyDepreciation * 12;
+        
+        // 3. Total Penyusutan (Berdasarkan jumlah bulan dalam periode tahun)
+        const totalMonths = usagePeriod * 12;
         let totalDepreciation = 0;
 
         if (methodSelect.value === 'STRAIGHT_LINE') {
-            annualDepreciation = calculateStraightLineDepreciation(acquisitionCost);
-            // Total penyusutan = penyusutan tahunan × periode penggunaan
-            totalDepreciation = annualDepreciation * usagePeriod;
+            totalDepreciation = monthlyDepreciation * totalMonths;
         } else if (methodSelect.value === 'REDUCING_BALANCE') {
-            annualDepreciation = calculateReducingBalanceDepreciation(acquisitionCost);
-            
-            // Hitung total penyusutan dengan metode saldo menurun
             let remainingValue = acquisitionCost;
             totalDepreciation = 0;
             
-            for (let i = 0; i < usagePeriod; i++) {
-                const yearDepreciation = remainingValue * 0.10;
-                totalDepreciation += yearDepreciation;
-                remainingValue -= yearDepreciation;
+            // Perhitungan saldo menurun berbasis bulan
+            for (let i = 0; i < totalMonths; i++) {
+                const monthRate = rate / 12; // Persentase bulanan
+                const monthDep = remainingValue * monthRate;
+                totalDepreciation += monthDep;
+                remainingValue -= monthDep;
             }
         }
 
@@ -301,14 +324,25 @@ document.addEventListener('DOMContentLoaded', function () {
     if (acquisitionCostInput && methodSelect && usagePeriodInput && acquisitionDateInput) {
         // Update tanggal penyusutan ketika tanggal akuisisi atau periode penggunaan berubah
         acquisitionDateInput.addEventListener('change', updateDepreciationDate);
-        usagePeriodInput.addEventListener('change', function() {
+        usagePeriodInput.addEventListener('input', function() {
             updateDepreciationDate();
             updateDepreciationValues();
         });
         
-        // Update nilai penyusutan ketika biaya akuisisi atau metode berubah
-        acquisitionCostInput.addEventListener('change', updateDepreciationValues);
+        // Update nilai penyusutan ketika biaya akuisisi, metode, atau kategori berubah
+        acquisitionCostInput.addEventListener('input', updateDepreciationValues);
         methodSelect.addEventListener('change', updateDepreciationValues);
+        categorySelect.addEventListener('change', function() {
+            const percentage = parseFloat(this.options[this.selectedIndex].getAttribute('data-percentage')) || 0;
+            if (percentage === 0) {
+                nonDepreciationCheckbox.checked = true;
+                nonDepreciationCheckbox.dispatchEvent(new Event('change'));
+            } else {
+                nonDepreciationCheckbox.checked = false;
+                nonDepreciationCheckbox.dispatchEvent(new Event('change'));
+            }
+            updateDepreciationValues();
+        });
         
         // Update semua nilai ketika checkbox non-depresiasi berubah
         nonDepreciationCheckbox.addEventListener('change', function() {

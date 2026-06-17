@@ -10,7 +10,7 @@
 
                 <div class="mb-3">
                     <label for="detail-asset" class="form-label fw-semibold">Nama Toko<span class="text-danger mx-3">*</span></label>
-                    <input name="name" type="text" class="form-control" id="nama aset" placeholder="Nama Aset">
+                    <input name="name" type="text" class="form-control" id="nama aset" placeholder="Nama Aset" required>
                 </div>
 
                 <div class="d-grid gap-2 mt-4">

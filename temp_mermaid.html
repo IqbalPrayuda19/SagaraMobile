@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Use Case Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: white;
+            font-family: sans-serif;
+        }
+        .mermaid {
+            width: 100%;
+            max-width: 1200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="mermaid">
+useCaseDiagram
+    actor "Guest" as guest
+    actor "User" as user
+
+    package "Authentication" {
+        usecase "Login" as UC1
+        usecase "Register" as UC2
+        usecase "Forgot Password" as UC3
+        usecase "Logout" as UC4
+        usecase "Verify Email" as UC5
+        usecase "Update Password" as UC6
+    }
+
+    package "Dashboard & Statistics" {
+        usecase "View Asset Statistics" as UC7
+        usecase "View Dashboard Overview" as UC8
+    }
+
+    package "Asset Management" {
+        usecase "List Assets" as UC9
+        usecase "View Asset Details" as UC10
+        usecase "Add New Asset" as UC11
+        usecase "Update Asset Info" as UC12
+        usecase "Calculate Depreciation" as UC13
+        usecase "Delete/Archive Asset" as UC14
+        usecase "Restore Asset" as UC15
+    }
+
+    package "Settings & Metadata" {
+        usecase "Manage Asset Categories" as UC16
+        usecase "Manage Asset Locations" as UC17
+    }
+
+    package "History & Logs" {
+        usecase "View History Log" as UC18
+        usecase "Delete History Entry" as UC19
+    }
+
+    package "Profile Management" {
+        usecase "Update Profile" as UC20
+        usecase "Delete Account" as UC21
+    }
+
+    %% Relationships for Guest
+    guest --> UC1
+    guest --> UC2
+    guest --> UC3
+
+    %% Relationships for Authenticated User
+    user --> UC4
+    user --> UC5
+    user --> UC6
+    user --> UC7
+    user --> UC8
+    user --> UC9
+    user --> UC10
+    user --> UC11
+    user --> UC12
+    user --> UC14
+    user --> UC15
+    user --> UC16
+    user --> UC17
+    user --> UC18
+    user --> UC19
+    user --> UC20
+    user --> UC21
+
+    %% Includes/Extends
+    UC11 ..> UC13 : &lt;&lt;include&gt;&gt;
+    UC12 ..> UC13 : &lt;&lt;include&gt;&gt;
+    </div>
+</body>
+</html>

@@ -48,6 +48,18 @@
                 width: calc(100% - 300px);
             }
         }
+
+        .alert-success {
+            background-color: #28a745 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 0 !important;
+            font-weight: 500;
+        }
+
+        .alert-success .btn-close {
+            filter: brightness(0) invert(1);
+        }
     </style>
 </head>
 
@@ -62,7 +74,7 @@
             <div id="main-content">
                 @include('dashboard.section.header.index')
                 @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <div class="alert alert-success alert-dismissible fade show mb-0" role="alert">
                         {{ session('success') }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->decimal('percentage', 5, 2)->default(0);
             $table->foreignId('created_by_id')->constrained('users')->onDelete('restrict');
             $table->timestamps();
         });

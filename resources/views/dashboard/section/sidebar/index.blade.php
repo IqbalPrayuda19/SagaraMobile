@@ -18,7 +18,7 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item {{ Request::is('asset', 'create', 'edit', 'asset/detail') ? 'active' : ''}}">
+                <li class="sidebar-item {{ Request::is('asset', 'create', 'edit*', 'asset/detail') ? 'active' : ''}}">
                     <a id="btn-dropdown" href="/asset" class='sidebar-link'>
                         <i data-feather="file" style="color: #435ebe;"></i>
                         <span>Assets</span>

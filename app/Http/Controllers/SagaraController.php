@@ -158,14 +158,9 @@ class SagaraController extends Controller
             $residualValue = $accuisitionCost * 0.1;
             $usagePeriod = $request->usage_period;
 
-            // Tetapkan nilai persentase penyusutan berdasarkan metode
-            if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
-                $depreciationRate = 0.05; // 5% untuk Straight Line
-            } else if ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
-                $depreciationRate = 0.10; // 10% untuk Reducing Balance
-            } else {
-                $depreciationRate = 0.05; // Default
-            }
+            // Ambil persentase dari kategori
+            $categoryModel = Categories::find($category);
+            $depreciationRate = ($categoryModel->percentage ?? 0) / 100;
 
             // Hitung nilai penyusutan per tahun
             if ($request->has('usage_value_per_year') && $request->usage_value_per_year > 0) {
@@ -376,14 +371,14 @@ class SagaraController extends Controller
         $usagePeriod = $request->usage_period ?? 0;
 
         // Rate penyusutan
+        $categoryModel = Categories::find($category);
+        $depreciationRate = ($categoryModel->percentage ?? 0) / 100;
+
         if ($method == 'STRAIGHT_LINE' || $method == Method::STRAIGHT_LINE->value) {
-            $depreciationRate = 0.05;
             $methodInstance = Method::STRAIGHT_LINE;
         } elseif ($method == 'REDUCING_BALANCE' || $method == Method::REDUCING_BALANCE->value) {
-            $depreciationRate = 0.10;
             $methodInstance = Method::REDUCING_BALANCE;
         } else {
-            $depreciationRate = 0.05;
             $methodInstance = Method::STRAIGHT_LINE;
         }
 
@@ -518,23 +513,16 @@ class SagaraController extends Controller
 
     public function createLocations (Request $request)
     {
-        try {
-            //code...
-            $request->validate([
-                'name' => 'required|string',
-            ]);
+        $request->validate([
+            'name' => 'required|string',
+        ]);
 
-            $locations = Locations::create([
-                'name' => $request->name,
-                'created_by_id' => Auth::user()->id,
-            ]);
-            return redirect()->route('settings')->with('Success','Item Add Successfully');
-        } catch (\Throwable $th) {
-            // throw $th;
-            return response()->json([
-                "error"=>$th->getMessage(),
-            ]);
-        }
+        Locations::create([
+            'name' => $request->name,
+            'created_by_id' => Auth::user()->id,
+        ]);
+
+        return redirect()->back()->with('success','Item Added successfully.');
     }
 
     public function getCategories()
@@ -545,23 +533,25 @@ class SagaraController extends Controller
 
     public function createCategories (Request $request)
     {
-        try {
-            //code...
-            $request->validate([
-                'name' => 'required|string',
-            ]);
-
-            $categories = Categories::create([
-                'name' => $request->name,
-                'created_by_id' => Auth::user()->id,
-            ]);
-            return redirect()->route('settings')->with('Success','Item Add Successfully');
-        } catch (\Throwable $th) {
-            // throw $th;
-            return response()->json([
-                "error"=>$th->getMessage(),
+        // Ubah koma ke titik agar bisa dibaca sebagai numeric oleh sistem
+        if ($request->has('percentage')) {
+            $request->merge([
+                'percentage' => str_replace(',', '.', $request->percentage)
             ]);
         }
+
+        $request->validate([
+            'name' => 'required|string',
+            'percentage' => 'required|numeric|min:0|max:100',
+        ]);
+
+        Categories::create([
+            'name' => $request->name,
+            'percentage' => $request->percentage,
+            'created_by_id' => Auth::user()->id,
+        ]);
+
+        return redirect()->back()->with('success','Item Added successfully.');
     }
 
     /**

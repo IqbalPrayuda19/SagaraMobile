@@ -38,7 +38,7 @@
                                 <div class="d-flex flex-wrap justify-content-center gap-2">
                                     @forelse($categories as $category)
                                         <span class="badge rounded-pill" style="background-color: rgba(13, 202, 240, 0.1); color: #0dcaf0; border: 1px solid #0dcaf0; font-size: 0.85rem; padding: 0.4rem 0.8rem;">
-                                            {{ $category->name }}
+                                            {{ $category->name }} @if($category->percentage > 0) ({{ number_format($category->percentage, $category->percentage == floor($category->percentage) ? 0 : 1, ',', '.') }}%) @endif
                                         </span>
                                     @empty
                                         <span class="text-muted fw-normal">Belum ada kategori terdaftar</span>

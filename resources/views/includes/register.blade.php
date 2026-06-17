@@ -19,28 +19,28 @@
                                 <!-- Name -->
                                 <div class="form-outline mb-4">
                                     <x-input-label for="name" :value="__('Name')" />
-                                    <x-text-input id="name" class="form-control form-control-lg" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="Masukkan Nama" />
+                                    <x-text-input id="name" class="form-control form-control-lg" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="Enter Name" />
                                     <x-input-error :messages="$errors->get('name')" class="mt-2 text-danger" />
                                 </div>
 
                                 <!-- Email -->
                                 <div class="form-outline mb-4">
                                     <x-input-label for="email" :value="__('Email')" />
-                                    <x-text-input id="email" class="form-control form-control-lg" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="Masukkan Email" />
+                                    <x-text-input id="email" class="form-control form-control-lg" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="Enter Email" />
                                     <x-input-error :messages="$errors->get('email')" class="mt-2 text-danger" />
                                 </div>
 
                                 <!-- Password -->
                                 <div class="form-outline mb-4">
                                     <x-input-label for="password" :value="__('Password')" />
-                                    <x-text-input id="password" class="form-control form-control-lg" type="password" name="password" required autocomplete="new-password" placeholder="Masukkan Password" />
+                                    <x-text-input id="password" class="form-control form-control-lg" type="password" name="password" required autocomplete="new-password" placeholder="Enter Password" />
                                     <x-input-error :messages="$errors->get('password')" class="mt-2 text-danger" />
                                 </div>
 
                                 <!-- Confirm Password -->
                                 <div class="form-outline mb-4">
                                     <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-                                    <x-text-input id="password_confirmation" class="form-control form-control-lg" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="Konfirmasi Password" />
+                                    <x-text-input id="password_confirmation" class="form-control form-control-lg" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="Confirm Password" />
                                     <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2 text-danger" />
                                 </div>
 
@@ -52,7 +52,7 @@
                                 <!-- Redirect to login -->
                                 <div class="text-center">
                                     <a class="text-decoration-none text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
-                                        {{ __('Sudah punya akun? Login') }}
+                                        {{ __('Already have an account? Login') }}
                                     </a>
                                 </div>
 
